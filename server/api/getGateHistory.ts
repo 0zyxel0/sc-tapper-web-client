@@ -5,7 +5,7 @@ const BASE_URL = process.env.BASE_URL
 
 export default defineEventHandler(async (event) => {
   try {
-    const myResult = await axios.get(`${BASE_URL}/api/gate-history/list`)
+    const myResult = await axios.get(`${BASE_URL}/api/gate-history/user/logs`)
     if (myResult) {
       return myResult.data;
     }

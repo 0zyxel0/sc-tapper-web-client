@@ -183,9 +183,7 @@ definePageMeta({
 
 const { uploadImage } = useUseUpload();
 
-
 const config = useRuntimeConfig()
-const client = useSupabaseClient();
 const toast = useToast()
 
 // Snackbar
@@ -257,15 +255,14 @@ const studentno = ref(null);
 async function initialize() {
 	try {
 		//   Get the Profile history on load of the page
-		let { data: profile_list, error } = await $fetch('/api/getProfileList')
+		const { data: profile_list } = await useFetch('/api/getProfileList');
 		if (profile_list) {
-			profileList.value = profile_list;
-			//console.log("image_url: ", baseUrl)
+			profileList.value = profile_list.value;
 		}
-	} catch (error) {
+	} catch (err) {
 		// Handle errors (e.g., console.error or throw an error)
-		console.error("Failed to fetch data: ", error);
-		throw error;
+		console.error("Failed to fetch data: ", err);
+		throw err;
 	}
 }
 
@@ -314,12 +311,7 @@ async function onSubmit() {
 	if (valid) {
 		if (newImageName.value) {
 			try {
-				uploadResult.value = await uploadImage(newImageName.value);
-				//console.log("Upload Details: ", uploadResult.value[0]);
-				// console.log("Image ID: ", uploadResult.value[0].id);
-				// console.log("Success", uploadResult.value[0].name);
-				// console.log("Image Url:", uploadResult.value[0].url);
-				// console.log("Hash: ", uploadResult.value[0].hash);
+				uploadResult.value = await uploadImage(newImageName.value);				
 				const payload = {
 					student_no: student_no.value,
 					last_name: last_name.value,
@@ -336,15 +328,9 @@ async function onSubmit() {
 				});
 				loginForm.value?.reset();
 				imagePreviewURL.value = "";
-				avatarImage.value = null
-				//console.log("Successfully Submited!");
-				// snackbar.value = true
-				// snackbar_icon.value = "mdi-check-circle"
-				// snackbar_color.value = "success";
-				// snackbar_msg.value = "Successfully submitted!"
+				avatarImage.value = null			
 				toast.success("Successfully created!")
 				loading.value = false;
-
 				newImageName.value = null;
 				initialize();
 			} catch (error) {
@@ -463,8 +449,8 @@ async function deleteItem() {
 
 }
 
-onMounted(() => {
-	initialize();
+onMounted(async () => {
+	await initialize();
 });
 </script>
 <style scoped>

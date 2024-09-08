@@ -1,0 +1,7 @@
+services:
+  foodmall:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${NUXT_PORT}:${NUXT_PORT}

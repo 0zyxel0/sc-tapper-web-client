@@ -7,9 +7,9 @@ const BASE_URL = process.env.BASE_URL
 export default defineEventHandler(async (event) => {
   try {
     //const body = await readBody(event)
-    const myResult = await axios.get(`${BASE_URL}/api/profiles/list`)
+    const myResult = await axios.get(`${BASE_URL}/api/profiles/users/available`)
     if(myResult) {
-      //console.log("List of Profile: ", myResult.data);
+      console.log("List of Profile: ", myResult);
       return myResult.data;
     }
   } catch (err) {

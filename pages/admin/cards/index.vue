@@ -2,20 +2,33 @@
 	<div>
 		<v-row>
 			<v-col>
-				<!-- <v-btn class="mb-3" color="purple" @click="dialog = true">Assign Card</v-btn> -->
 				<v-card elevation="0">
 					<v-card-title class="d-flex align-center pe-2">
 						<v-icon icon="mdi-credit-card-multiple" start></v-icon> Cards
 
 						<v-spacer></v-spacer>
 
-						<v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
-							variant="solo-filled" flat hide-details single-line></v-text-field>
+						<v-text-field
+							v-model="search"
+							density="compact"
+							label="Search"
+							prepend-inner-icon="mdi-magnify"
+							variant="solo-filled"
+							flat
+							hide-details
+							single-line
+						></v-text-field>
 					</v-card-title>
 
 					<v-divider></v-divider>
 					<v-data-table v-model:search="search" :headers="headers" :items="profileList">
-
+						<template v-slot:item.actions="{ item }">
+							<v-icon class="me-2" size="small" @click="editItem(item)"> mdi-pencil </v-icon>
+							<v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
+						</template>
+						<template v-slot:no-data>
+							<v-btn color="primary" @click="initialize"> Reset </v-btn>
+						</template>
 					</v-data-table>
 				</v-card>
 			</v-col>
@@ -41,35 +54,30 @@ const headers = ref([
 	{ title: "Profile ID", key: "profileid" },
 	{ title: "Actions", key: "actions", sortable: false },
 ]);
-
-const profileList = ref([
-	{
-		cardid: "Cosmos GTX 1660 Super",
-		profile_publicid: "5.png",
-		profileid: 299.99,
-		rating: 4,
-		stock: false,
-		actions: ""
-	},
-]);
-
+const profileList = ref([]);
 const cardList = ref([]);
-
 async function initialize() {
 	try {
 		// Get the list of assign card on load of the page
-		let { data: card_list, error } = await $fetch(`/api/getCardList`)
+		const { data: card_list } = await useFetch(`/api/getCardList`);
 		if (card_list) {
-			profileList.value = card_list;
+			profileList.value = card_list.value;
 		}
-
 	} catch (error) {
 		console.error("Failed to fetch data: ", error);
 		throw error;
 	}
 }
 
-onMounted(() => {
-	initialize();
-})
+function editItem(item) {
+	console.log(item);
+}
+
+function deleteItem(item){
+	console.log(item);
+}
+
+onMounted(async () => {
+	await initialize();
+});
 </script>

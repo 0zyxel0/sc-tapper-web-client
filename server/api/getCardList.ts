@@ -5,7 +5,7 @@ const BASE_URL = process.env.BASE_URL
 
 export default defineEventHandler(async (event) => {
   try {
-    const myResult = await axios.get(`${BASE_URL}/api/card/list-card`)
+    const myResult = await axios.get(`${BASE_URL}/api/cards/assigned/user-cards`)
     if(myResult) {
       return myResult.data;
     }

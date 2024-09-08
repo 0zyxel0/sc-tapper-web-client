@@ -104,7 +104,7 @@ const cardInputRef = ref(null);
 async function initialize() {
   try {
 
-    let { data: gate_history, error } = await $fetch('/api/getGateHistory')
+    let { data: gate_history, error } = await useFetch('/api/getGateHistory')
     if (gate_history) {
       historyList.value = gate_history;
     }

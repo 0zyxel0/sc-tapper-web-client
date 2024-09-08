@@ -16,9 +16,8 @@ export default defineEventHandler(async (event) => {
       image_id: body.image_id      
     }
 
-    const myResult = await axios.post(`${BASE_URL}/api/profiles/create`, myPayload)
+    const myResult = await axios.post(`${BASE_URL}/api/profiles/users/create`, myPayload)
     if (myResult) {
-      //console.log(myResult.data);
       return myResult.data;
     }
   } catch (err) {

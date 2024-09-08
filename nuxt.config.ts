@@ -14,22 +14,7 @@ export default defineNuxtConfig({
       })
     },
     'nuxt-time',
-    '@nuxtjs/supabase',
-    //...
   ],
-  supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
-    redirect: false,
-    redirectOption: {
-      login: '/login',
-      callback: '/confirm',
-      include: undefined,
-      cookieRedirect: false,
-      exclude: ['/gate', '/grid', '/admin', '/admin/profiles', '/admin/cards'],
-    },
-  },
-
   vite: {
     vue: {
       template: {
