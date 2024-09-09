@@ -389,8 +389,7 @@ const rules = ref({
 async function initialize() {
   try {
     const result = await axios.get(`/api/profile/${route.params.id}`)
-    if (result) {
-      console.log(result.data[0]);
+    if (result) {      
       profileDetails.value = result.data[0];
       cardDetails.value = result.data[0].card;
       profileid.value = result.data[0].id;
