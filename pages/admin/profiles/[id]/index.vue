@@ -319,7 +319,7 @@ import { useRoute } from 'vue-router';
 import { useUseUpdateUpload } from '~/composables/useUpdateUpload';
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from 'vue-toastification';
-
+import axios from 'axios';
 const route = useRoute();
 const router = useRouter()
 const toast = useToast()
@@ -388,20 +388,20 @@ const rules = ref({
 
 async function initialize() {
   try {
-    const { data: profile_details } = await useFetch(`/api/profile/${route.params.id}`)
-    if (profile_details) {
-      console.log(profile_details.value.data);
-      profileDetails.value = profile_details.value.data[0];
-      cardDetails.value = profile_details.value.data[0].card_details;
-      profileid.value = profile_details.value.data[0].id;
-      profile_publicid.value = profile_details.value.data[0].publicid
+    const result = await axios.get(`/api/profile/${route.params.id}`)
+    if (result) {
+      console.log(result.data[0]);
+      profileDetails.value = result.data[0];
+      cardDetails.value = result.data[0].card;
+      profileid.value = result.data[0].id;
+      profile_publicid.value = result.data[0].publicid
 
-      student_no.value = profile_details.value.data[0].studentno
-      last_name.value = profile_details.value.data[0].last_name
-      first_name.value = profile_details.value.data[0].first_name
-      middle_name.value = profile_details.value.data[0].middle_name
-      image_id.value = profile_details.value.data[0].image_id
-      publicID.value = profile_details.value.data[0].publicid
+      student_no.value = result.data[0].studentno
+      last_name.value = result.data[0].last_name
+      first_name.value = result.data[0].first_name
+      middle_name.value = result.data[0].middle_name
+      image_id.value = result.data[0].image_id
+      publicID.value = result.data[0].publicid
     }
   } catch (error) {
     console.error("Failed to fetch data: ", error);
