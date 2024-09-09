@@ -145,13 +145,9 @@ async function handleSubmit() {
 			// Add Delay to the Request
 			currentProfile.value = myProfileDetails;
 			currentPhoto.value = base_url + myProfileDetails.profile.image_url;
-			await new Promise((resolve) => setTimeout(resolve, 2000));
-			const payload = {
-				cardid: myProfileDetails.cardid,
-				profileid: myProfileDetails.profileid,
-				profile_publicid: myProfileDetails.profile_publicid,
-				profile_avatar: myProfileDetails.profile.image_url,
-			};
+			// await new Promise((resolve) => setTimeout(resolve, 2000));			
+      clearInput();
+      isSubmitting.value = false;
 			startCooldown();
 		}
 	}
