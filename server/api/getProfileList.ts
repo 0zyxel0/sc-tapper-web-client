@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     //const body = await readBody(event)
     const myResult = await axios.get(`${BASE_URL}/api/profiles/users/available`)
     if(myResult) {
-      console.log("List of Profile: ", myResult);
       return myResult.data;
     }
   } catch (err) {
