@@ -14,6 +14,7 @@ export default defineNuxtConfig({
       })
     },
     'nuxt-time',
+    '@pinia/nuxt',
   ],
   vite: {
     vue: {
