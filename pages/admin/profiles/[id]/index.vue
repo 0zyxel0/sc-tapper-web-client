@@ -6,19 +6,9 @@
         <v-row dense>
           <v-col cols="12" class="text-center">
             <v-card elevation="0">
-              <v-card-text>
+              <v-card-text v-if="profileDetails">
                 <v-img class="image_url mx-auto" :src="baseUrl + profileDetails.image_url" alt=""
                   lazy-src="https://fakeimg.pl/400x400?text=Photo" />
-
-                <!-- <v-avatar :image="baseUrl + profileDetails.image_url" size="203" style="border: 3px solid grey;"></v-avatar> -->
-
-                <!-- <v-btn color="primary" class="text-none mt-2" block round depressed
-									:loading="isSelecting" @click="onButtonClick">
-									<v-icon start>
-										mdi-cloud-upload
-									</v-icon>
-									
-								</v-btn> -->
                 <v-btn variant="tonal" color="primary" class="text-none mt-2" pre @click="updateImageDialogbox = true"
                   round depressed> <v-icon>mdi-camera</v-icon></v-btn>
 
@@ -30,6 +20,10 @@
                   <p>{{ profileDetails.studentno }}</p>
                 </div>
               </v-card-text>
+              <v-card-text v-else>
+                <v-img class="image_url mx-auto" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />             
+              </v-card-text>
+              
               <v-divider class="mt-4"></v-divider>
               <v-card-actions class="mx-2 my-2">
                 <v-row>
@@ -198,21 +192,12 @@
           <v-divider></v-divider>
           <v-card-text>
             <v-row>
-              <v-col cols="4">
+              <v-col cols="4" v-if="profileDetails">
                 <v-img class="image_url mx-auto" :src="baseUrl + profileDetails.image_url" alt=""
                   lazy-src="https://fakeimg.pl/400x400?text=Photo" />
-
-                <!-- <v-btn color="primary" class="text-none mt-2" block round depressed :loading="isSelecting"
-                  @click="onButtonClick">
-                  <v-icon start>
-                    mdi-cloud-upload
-                  </v-icon>
-                </v-btn>
-                <v-file-input :rules="rules.photo" v-model="avatarImage" accept="image/png, image/jpeg, image/bmp"
-                  density="compact" prepend-icon="mdi-camera" label="Upload Image" ref="uploader" required
-                  class="d-none" @change="onFileChange" @click:clear="clearImagePreview()"></v-file-input> -->
-
-
+              </v-col>
+              <v-col cols="4" v-else>
+                <v-img class="image_url mx-auto" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
               </v-col>
               <v-col cols="8">
                 <v-text-field v-model="student_no" :rules="rules.studentno" label="Student No"></v-text-field>
@@ -223,16 +208,13 @@
               </v-col>
             </v-row>
             <div class="d-flex mb-3">
-
             </div>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn variant="elevated" color="success" @click="updateInfo"> Update </v-btn>
             <v-btn variant="elevated" color="error" @click="updateProfileDialog = false"> Cancel </v-btn>
-            <v-spacer></v-spacer>
-            <!-- <v-btn class="mt-4" color="primary" variant="outlined" size="large"
-									@click.prevent="onSubmit">Submit</v-btn> -->
+            <v-spacer></v-spacer>       
           </v-card-actions>
         </v-form>
       </v-card>
@@ -254,7 +236,6 @@
         </v-toolbar>
         <v-divider></v-divider>
         <v-card-text>
-
           <v-img :src="avatarImage ? imagePreviewURL : ''" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo"
             style="max-width: 100%; object-fit: cover" height="30vh" />
 
@@ -362,18 +343,14 @@ const selectedFile = ref(null);
 const uploadResult = ref(null);
 const newImageName = ref(null);
 const publicID = ref("");
-
-
 const student_no = ref(null);
 const last_name = ref(null);
 const first_name = ref(null);
 const middle_name = ref(null);
 const isSelecting = ref(false);
 const image_id = ref(null);
-
 const profileDetails = ref({})
 const cardDetails = ref({})
-
 const avatarImage = ref(null);
 
 const rules = ref({
@@ -388,13 +365,12 @@ const rules = ref({
 
 async function initialize() {
   try {
-    const result = await axios.get(`/api/profile/${route.params.id}`)
+    const result = await axios.post(`/api/profile/${route.params.id}`)
     if (result) {      
       profileDetails.value = result.data[0];
       cardDetails.value = result.data[0].card;
       profileid.value = result.data[0].id;
       profile_publicid.value = result.data[0].publicid
-
       student_no.value = result.data[0].studentno
       last_name.value = result.data[0].last_name
       first_name.value = result.data[0].first_name
@@ -424,16 +400,9 @@ async function assignCard() {
           method: 'POST',
           body: payload
         });
-        //console.log("Successfulyy Assign")
-        //console.log("Card ID: ", cardid.value);
-        //console.log("Card Details: ", payload);
         assignCardForm.value?.reset();
         assignCardDialog.value = false;
         loader.value = false
-        // snackbar.value = true
-        // snackbar_icon.value = "mdi-check-circle"
-        // snackbar_color.value = "success";
-        // snackbar_msg.value = "Successfully assign a card!"
         toast.success("Successfully assigned a card!")
         initialize();
       } catch (error) {
@@ -458,17 +427,10 @@ async function updateInfo() {
         first_name: first_name.value,
         middle_name: middle_name.value,
       };
-
-      //console.log(payload);
       await $fetch(`/api/profile/update/${route.params.id}`, {
         method: "PUT",
         body: payload
       })
-
-      // snackbar.value = true
-      // snackbar_icon.value = "mdi-check-circle"
-      // snackbar_color.value = "success";
-      // snackbar_msg.value = "Profile successfully updated!"
       toast.success("Profile successfully updated!")
       initialize()
     } catch (error) {
@@ -482,7 +444,6 @@ async function updateInfo() {
 // Show Unlink Dialog Box
 function showUnlinkDialogBox() {
   unlinkDialogbox.value = true;
-  //console.log(profileid.value)
 }
 
 // Unlink Card Function
@@ -495,10 +456,6 @@ async function unlinkCard() {
     })
     if (response) {
       loader.value = false
-      // snackbar.value = true
-      // snackbar_icon.value = "mdi-check-circle"
-      // snackbar_color.value = "success";
-      // snackbar_msg.value = "Successfully unlink the card!"
       toast.success("Successfully unlink the card!")
       initialize()
     }
@@ -506,24 +463,17 @@ async function unlinkCard() {
     console.error("Failed to unlink card: ", error);
     throw error;
   }
-  // setTimeout(function () {
-
-  // }, 3000)
-
 }
 
 async function onFileChange(event) {
-  //console.log(event)
   if (event.target.files.length == 0) {
     console.log("Cancel Upload")
   } else {
-    //console.log("Publicid: ", publicID.value)
     const image = event.target.files[0];
     const originalName = event.target.files[0].name;
     const ext = originalName.split(".").pop();
     const blob = image.slice(0, image.size);
     selectedFile.value = event.target.files[0];
-    //publicID.value = uuidv4();
     newImageName.value = new File([blob], `${publicID.value}.${ext}`, { type: `${image.type}` });
 
     if (image) {
@@ -532,10 +482,6 @@ async function onFileChange(event) {
     } else {
       imagePreviewURL.value = null;
     }
-
-    //console.log("Current name: ", image);
-    //console.log("New name: ", newImageName.value);
-    //console.log("Extension: ", ext);
   }
 
 }
@@ -558,19 +504,11 @@ async function closeImageUpload() {
 async function uploadUpdatedImage() {
 
   if (newImageName.value) {
-    // console.log("Upload Image")
-    // console.log("Image Details: ", newImageName.value.name)
     try {
       // Delete current image then upload the updated image
       const response = await $fetch(`/api/profile/photo/delete/${image_id.value}`)
       if (response) {
         uploadResult.value = await uploadUpdateImage(newImageName.value)
-       // console.log("Upload Details: ", uploadResult.value[0]);
-       // console.log("Image ID: ", uploadResult.value[0].id);
-       // console.log("Success", uploadResult.value[0].name);
-       // console.log("Image Url:", uploadResult.value[0].url);
-       // console.log("Hash: ", uploadResult.value[0].hash);
-
         const payload = {
           image_url: uploadResult.value[0].url,
           image_id: uploadResult.value[0].id
@@ -588,7 +526,6 @@ async function uploadUpdatedImage() {
         initialize()
       } else {
         console.error("Error deleting current image")
-        //uploadResult.value = await uploadUpdateImage(newImageName.value)
       }
 
 
@@ -597,10 +534,6 @@ async function uploadUpdatedImage() {
     }
 
   } else {
-    // snackbar.value = true;
-    // snackbar_color.value = "error";
-    // snackbar_msg.value = "No image selected!"
-    // snackbar_icon.value = "mdi-alert"
     toast.error("No image selected!")
     console.error("No image selected!");
   }
@@ -613,23 +546,13 @@ async function deleteProfile() {
     const payload = {
       image_id: image_id.value
     }
-    //console.log(payload);
-
     await $fetch(`/api/profile/delete/${route.params.id}`, {
       method: "PUT",
       body: payload
     })
     loading.value = false;
-    // snackbar.value = true;
-    // snackbar_icon.value = "mdi-delete-circle";
-    // snackbar_color.value = "success";
-    // snackbar_msg.value = "Profile deleted successfullyt!";
     toast.success("Profile deleted successfully!")
-    //console.log("Profile deleted successfully");
     await navigateTo('/admin/profiles')
-    // router.push({ path: '/admin/profiles',
-    //   query: { deleted: true}
-    // })
   } catch (error) {
     loading.value = false;
     console.error(error);
@@ -638,7 +561,7 @@ async function deleteProfile() {
 
 }
 
-onMounted(async() => {
+onMounted(async() => {  
   await initialize()
 })
 

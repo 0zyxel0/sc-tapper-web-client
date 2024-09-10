@@ -29,7 +29,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiToken: process.env.API_UPLOAD_TOKEN,
+      apiToken: process.env.API_TOKEN,
       apiBase: process.env.BASE_URL,
     }
     

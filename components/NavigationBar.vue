@@ -5,6 +5,7 @@
 			<v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" to="/"></v-list-item>
 			<v-list-item prepend-icon="mdi-credit-card" title="Cards" to="/admin/cards"></v-list-item>
 			<v-list-item prepend-icon="mdi-account" title="Profiles" to="/admin/profiles"></v-list-item>
+			<v-list-item prepend-icon="mdi-gate" title="Gate" to="/"></v-list-item>
 		</v-list>
 
 		<template v-slot:append>
