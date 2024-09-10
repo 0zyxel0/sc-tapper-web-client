@@ -432,8 +432,7 @@ async function deleteItem() {
 }
 
 onMounted(async () => {
-	console.log("Base URL:", baseUrl);
-	// await initialize();
+	await initialize();
 });
 </script>
 <style scoped>
