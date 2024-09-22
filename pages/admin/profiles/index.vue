@@ -188,8 +188,6 @@ definePageMeta({
 	layout: "admin",
 });
 
-const BASE_URL = process.env.BASE_URL;
-
 const { uploadImage } = useUseUpload();
 
 const config = useRuntimeConfig();
@@ -324,7 +322,7 @@ async function onSubmit() {
 					image_id: uploadResult.value[0].id,
 				};
 				await axios
-					.post(`${baseUrl}/api/profiles/users/create`, payload)
+					.post(`/api/createProfile`,payload)
 					.then(() => {
 						dialog.value = false;
 						loginForm.value?.reset();
