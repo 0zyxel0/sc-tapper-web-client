@@ -183,6 +183,7 @@ import { useUseUpload } from "~/composables/useUpload";
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "vue-toastification";
 import axios from "axios";
+
 definePageMeta({
 	layout: "admin",
 });
@@ -306,6 +307,7 @@ async function cancelAddRecord() {
 async function onSubmit() {
 	const { valid, errors } = await loginForm.value?.validate();
 	loading.value = true;
+	console.log(baseUrl);
 	if (valid) {
 		if (newImageName.value) {
 			try {
@@ -320,9 +322,7 @@ async function onSubmit() {
 					image_id: uploadResult.value[0].id,
 				};
 				await axios
-					.post(`/api/createProfile`, {
-						payload,
-					})
+					.post(`/api/createProfile`,payload)
 					.then(() => {
 						dialog.value = false;
 						loginForm.value?.reset();
