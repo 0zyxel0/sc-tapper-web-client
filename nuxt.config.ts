@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     public: {
       apiToken: process.env.API_TOKEN,
       apiBase: process.env.BASE_URL,
+      imageBase: process.env.IMAGEBASE_URL,
     }
     
   }
