@@ -179,14 +179,12 @@
 	</div>
 </template>
 <script setup>
-import { useUseUpload } from "~/composables/useUpload";
-import { v4 as uuidv4 } from "uuid";
-import { useToast } from "vue-toastification";
-import axios from "axios";
-
 definePageMeta({
 	layout: "admin",
 });
+import { v4 as uuidv4 } from "uuid";
+import { useToast } from "vue-toastification";
+import axios from "axios";
 
 // Composable utility function import
 const { getBackendUrl, formatCurImageUrl, uploadImage } = useUtils();
