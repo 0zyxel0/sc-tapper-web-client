@@ -71,7 +71,7 @@ import { useUseUpload } from "~/composables/useUpload";
 //@ts-ignore
 import { v4 as uuidv4 } from "uuid";
 
-const { uploadImage } = useUseUpload();
+const { uploadImage } = useUtils();
 
 const student_no = ref("");
 const last_name = ref("");

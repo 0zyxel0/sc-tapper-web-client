@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   pages: true,
   ssr:false,
+  server: {
+    hmr: {
+      protocol: 'ws',
+      host: '0.0.0.0',
+    }
+  },
   build: {
     transpile: ['vuetify', 'vue-toastification'],
   },

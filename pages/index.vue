@@ -84,6 +84,8 @@
 <script setup>
 import axios from "axios";
 const config = useRuntimeConfig();
+// Composable utility function import
+const { getBackendUrl, formatCurImageUrl } = useUtils();
 const base_url = config.public.apiBase;
 const cardid = ref(null);
 const currentProfile = ref(null);
@@ -145,9 +147,9 @@ async function handleSubmit() {
 			// Add Delay to the Request
 			currentProfile.value = myProfileDetails;
 			currentPhoto.value = base_url + myProfileDetails.profile.image_url;
-			// await new Promise((resolve) => setTimeout(resolve, 2000));			
-      clearInput();
-      isSubmitting.value = false;
+			// await new Promise((resolve) => setTimeout(resolve, 2000));
+			clearInput();
+			isSubmitting.value = false;
 			startCooldown();
 		}
 	}
@@ -165,6 +167,18 @@ function startCooldown() {
 		clearProfileReading();
 		cardMessage.value = "Scanner Ready";
 	}, submitCooldown);
+}
+
+// Function to loop through the array and update the image_url
+async function updateImageUrls(students) {
+	const myBase = await getBackendUrl();
+	return students.map((student) => {
+		const updatedUrl = formatCurImageUrl(myBase, student.image_url); // Call your utility function
+		return {
+			...student,
+			image_url: updatedUrl, // Update the image_url with the result of formatCurImageUrl
+		};
+	});
 }
 
 watch(isSubmitting, () => {

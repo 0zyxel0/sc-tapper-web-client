@@ -326,7 +326,6 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { useUseUpdateUpload } from "~/composables/useUpdateUpload";
 import { useToast } from "vue-toastification";
 import axios from "axios";
 import { useProfileStore } from "~/stores/profile";
@@ -334,11 +333,10 @@ const profileStore = useProfileStore();
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
-const { formatCurImageUrl } = useUtils();
+const { formatCurImageUrl, uploadUpdateImage } = useUtils();
 definePageMeta({
 	layout: "admin",
 });
-const { uploadUpdateImage } = useUseUpdateUpload();
 
 const config = useRuntimeConfig();
 const baseUrl = config.public.apiBase;

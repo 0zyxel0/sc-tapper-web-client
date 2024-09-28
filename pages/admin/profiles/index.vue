@@ -188,9 +188,8 @@ definePageMeta({
 	layout: "admin",
 });
 
-const { uploadImage } = useUseUpload();
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl } = useUtils();
+const { getBackendUrl, formatCurImageUrl, uploadImage } = useUtils();
 
 const config = useRuntimeConfig();
 const toast = useToast();
