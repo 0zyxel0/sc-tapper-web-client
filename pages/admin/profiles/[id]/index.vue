@@ -1,13 +1,12 @@
 <template>
 	<div>
-		<!-- <h1>{{ this.$route.params.id}}</h1> -->
 		<v-row dense>
 			<v-col cols="12" md="3" sm="12">
 				<v-row dense>
 					<v-col cols="12" class="text-center">
 						<v-card elevation="0">
 							<v-card-text v-if="profileDetails">
-								<v-img class="image_url mx-auto" :src="baseUrl + profileDetails.image_url" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-img class="image_url mx-auto" :src="imageBase + profileDetails.image_url" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
 								<v-btn variant="tonal" color="primary" class="text-none mt-2" pre @click="updateImageDialogbox = true" round depressed>
 									<v-icon>mdi-camera</v-icon></v-btn
 								>
@@ -214,7 +213,7 @@
 					<v-card-text>
 						<v-row>
 							<v-col cols="4" v-if="profileDetails">
-								<v-img class="image_url mx-auto" :src="baseUrl + profileDetails.image_url" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-img class="image_url mx-auto" :src="formatCurImageUrl(profileDetails.image_url)" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
 							</v-col>
 							<v-col cols="4" v-else>
 								<v-img class="image_url mx-auto" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
@@ -328,7 +327,6 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useUseUpdateUpload } from "~/composables/useUpdateUpload";
-import { v4 as uuidv4 } from "uuid";
 import { useToast } from "vue-toastification";
 import axios from "axios";
 import { useProfileStore } from "~/stores/profile";
@@ -336,7 +334,7 @@ const profileStore = useProfileStore();
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
-
+const { formatCurImageUrl } = useUtils();
 definePageMeta({
 	layout: "admin",
 });
@@ -344,6 +342,7 @@ const { uploadUpdateImage } = useUseUpdateUpload();
 
 const config = useRuntimeConfig();
 const baseUrl = config.public.apiBase;
+const imageBase = config.public.imageBase;
 
 // Dialog box
 const loader = ref(false);

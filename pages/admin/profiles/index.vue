@@ -24,7 +24,7 @@
 					<v-divider></v-divider>
 					<v-data-table v-model:search="search" :items="profileList" :headers="headers">
 						<template v-slot:[`item.image_url`]="{ item }">
-							<v-avatar :image="imageBase + item.image_url" size="45" tile></v-avatar>
+							<v-avatar :image="item.image_url" size="45" tile></v-avatar>
 						</template>
 						<template v-slot:[`item.is_card_assign`]="{ item }">
 							<v-icon size="35" color="grey" v-if="item.is_card_assign == false">mdi-smart-card-off</v-icon>
@@ -189,6 +189,8 @@ definePageMeta({
 });
 
 const { uploadImage } = useUseUpload();
+// Composable utility function import
+const { getBackendUrl, formatCurImageUrl } = useUtils();
 
 const config = useRuntimeConfig();
 const toast = useToast();
@@ -260,9 +262,12 @@ const studentno = ref(null);
 async function initialize() {
 	try {
 		//   Get the Profile history on load of the page
-		const { data: profile_list } = await useFetch("/api/getProfileList");
-		if (profile_list) {
-			profileList.value = profile_list.value;
+		const { data: result } = await useFetch("/api/getProfileList");
+		if (result) {
+			const resultList = await updateImageUrls(result.value);
+			if(resultList){
+				profileList.value = resultList;
+			}
 		}
 	} catch (err) {
 		// Handle errors (e.g., console.error or throw an error)
@@ -321,18 +326,16 @@ async function onSubmit() {
 					image_url: uploadResult.value[0].url,
 					image_id: uploadResult.value[0].id,
 				};
-				await axios
-					.post(`/api/createProfile`,payload)
-					.then(() => {
-						dialog.value = false;
-						loginForm.value?.reset();
-						imagePreviewURL.value = "";
-						avatarImage.value = null;
-						toast.success("Successfully created!");
-						loading.value = false;
-						newImageName.value = null;
-						initialize();
-					});
+				await axios.post(`/api/createProfile`, payload).then(() => {
+					dialog.value = false;
+					loginForm.value?.reset();
+					imagePreviewURL.value = "";
+					avatarImage.value = null;
+					toast.success("Successfully created!");
+					loading.value = false;
+					newImageName.value = null;
+					initialize();
+				});
 			} catch (error) {
 				console.error(error);
 				loading.value = false;
@@ -346,6 +349,18 @@ async function onSubmit() {
 		loading.value = false;
 		console.log(errors[0].errorMessages[0]);
 	}
+}
+
+// Function to loop through the array and update the image_url
+async function updateImageUrls(students) {
+	const myBase = await getBackendUrl();
+	return students.map((student) => {
+		const updatedUrl = formatCurImageUrl(myBase, student.image_url); // Call your utility function
+		return {
+			...student,
+			image_url: updatedUrl, // Update the image_url with the result of formatCurImageUrl
+		};
+	});
 }
 
 async function onButtonClick() {
@@ -392,7 +407,7 @@ async function assignCard() {
 				await $fetch("/api/assignProfileCard", {
 					method: "POST",
 					body: payload,
-				});			
+				});
 				assignCardForm.value?.reset();
 				assignCardDialog.value = false;
 				initialize();
