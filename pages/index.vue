@@ -99,7 +99,7 @@ const date = ref(new Date());
 const cardMessage = ref("Scanner Ready");
 async function initialize() {
 	try {
-		const result = await axios.get("/api/getGateHistory");
+		const result = await axios.get("/api/gate/history");
 		if (result) {
 			const resultList = await updateImageUrls(result.data);
 			historyList.value = resultList;
