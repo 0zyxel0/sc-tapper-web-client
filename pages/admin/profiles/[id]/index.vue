@@ -6,7 +6,12 @@
 					<v-col cols="12" class="text-center">
 						<v-card elevation="0">
 							<v-card-text v-if="profileDetails">
-								<v-img class="image_url mx-auto" :src="imageBase + profileDetails.image_url" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-img
+									class="image_url mx-auto"
+									:src="imageBase + profileDetails.image_url"
+									alt=""
+									lazy-src="https://fakeimg.pl/400x400?text=Photo"
+								/>
 								<v-btn variant="tonal" color="primary" class="text-none mt-2" pre @click="updateImageDialogbox = true" round depressed>
 									<v-icon>mdi-camera</v-icon></v-btn
 								>
@@ -127,7 +132,7 @@
 										<v-col> <v-btn variant="flat" block color="green">Save</v-btn></v-col>
 									</v-row>
 								</v-card-actions>
-							</v-card>         
+							</v-card>
 						</v-tabs-window-item>
 					</v-tabs-window>
 				</v-card>
@@ -213,7 +218,12 @@
 					<v-card-text>
 						<v-row>
 							<v-col cols="4" v-if="profileDetails">
-								<v-img class="image_url mx-auto" :src="formatCurImageUrl(profileDetails.image_url)" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-img
+									class="image_url mx-auto"
+									:src="formatCurImageUrl(profileDetails.image_url)"
+									alt=""
+									lazy-src="https://fakeimg.pl/400x400?text=Photo"
+								/>
 							</v-col>
 							<v-col cols="4" v-else>
 								<v-img class="image_url mx-auto" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
@@ -325,6 +335,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+	layout: "admin",
+});
+
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import axios from "axios";
@@ -333,15 +347,9 @@ const profileStore = useProfileStore();
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
-const { formatCurImageUrl, uploadUpdateImage } = useUtils();
-definePageMeta({
-	layout: "admin",
-});
-
+const { getBackendUrl, formatCurImageUrl, uploadUpdateImage } = useUtils();
 const config = useRuntimeConfig();
-const baseUrl = config.public.apiBase;
 const imageBase = config.public.imageBase;
-
 // Dialog box
 const loader = ref(false);
 const unlinkDialogbox = ref(false);

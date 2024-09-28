@@ -66,7 +66,7 @@
 								<template v-for="item in historyList" :key="item">
 									<div class="pa-1" v-if="item">
 										<v-card width="120px" class="elevation-0">
-											<v-img height="90px" :src="base_url + item?.profile_avatar" contain></v-img>
+											<v-img height="90px" :src="item?.profile_avatar" contain></v-img>
 											<v-card-text>{{ item?.profileid }}</v-card-text>
 										</v-card>
 									</div>
@@ -101,7 +101,8 @@ async function initialize() {
 	try {
 		const result = await axios.get("/api/getGateHistory");
 		if (result) {
-			historyList.value = result.data;
+			const resultList = await updateImageUrls(result.data);
+			historyList.value = resultList;
 		}
 	} catch (err) {
 		console.log(err);
@@ -169,14 +170,14 @@ function startCooldown() {
 	}, submitCooldown);
 }
 
-// Function to loop through the array and update the image_url
+// Function to loop through the array and update the profile_avatar
 async function updateImageUrls(students) {
 	const myBase = await getBackendUrl();
 	return students.map((student) => {
-		const updatedUrl = formatCurImageUrl(myBase, student.image_url); // Call your utility function
+		let updatedUrl = formatCurImageUrl(myBase, student.profile_avatar); // Call your utility function
 		return {
 			...student,
-			image_url: updatedUrl, // Update the image_url with the result of formatCurImageUrl
+			profile_avatar: updatedUrl, // Update the profile_avatar with the result of formatCurImageUrl
 		};
 	});
 }
