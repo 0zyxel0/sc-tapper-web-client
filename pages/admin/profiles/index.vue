@@ -24,7 +24,7 @@
 					<v-divider></v-divider>
 					<v-data-table v-model:search="search" :items="profileList" :headers="headers">
 						<template v-slot:[`item.image_url`]="{ item }">
-							<v-avatar :image="baseUrl + item.image_url" size="45" tile></v-avatar>
+							<v-avatar :image="imageBase + item.image_url" size="45" tile></v-avatar>
 						</template>
 						<template v-slot:[`item.is_card_assign`]="{ item }">
 							<v-icon size="35" color="grey" v-if="item.is_card_assign == false">mdi-smart-card-off</v-icon>
@@ -212,6 +212,7 @@ const imageFile = ref(null);
 const previewImage = ref(null);
 const showUploader = ref(true);
 const baseUrl = config.public.apiBase;
+const imageBase = config.public.imageBase;
 const form = ref([]);
 const headers = ref([
 	{
@@ -307,7 +308,6 @@ async function cancelAddRecord() {
 async function onSubmit() {
 	const { valid, errors } = await loginForm.value?.validate();
 	loading.value = true;
-	console.log(baseUrl);
 	if (valid) {
 		if (newImageName.value) {
 			try {
