@@ -103,12 +103,15 @@ const loginForm = ref(null);
 const valid = ref(true);
 
 async function onFileChange(event) {
+  // Generate UUID
+  const genId = uuidv4();
+
   const image = event.target.files[0];
   const originalName = event.target.files[0].name;
   const ext = originalName.split(".").pop();
   const blob = image.slice(0, image.size);
-  publicID.value = uuidv4();
-  newImageName.value = new File([blob], `${publicID.value}.${ext}`, { type: `${image.type}` });
+  publicID.value = genId;
+  newImageName.value = new File([blob], `${genId}.${ext}`, { type: `${image.type}` });
 
   if (image) {
     imagePreviewURL.value = URL.createObjectURL(image);
@@ -129,26 +132,15 @@ async function clearImagePreview() {
 
 async function onSubmit() {
   const { valid, errors } = await loginForm.value?.validate();
-
-  // if (valid) {
-  //   await $fetch('/api/createProfile', {
-  //     method: 'POST',
-  //     body: payload
-  //   });
-
-  //   loginForm.value?.reset();
-  //   console.log("Submit Records")
-  // } else {
-  //   console.log(errors);
-  // }
-
   if (valid) {
     if (newImageName.value) {
       try {
-        uploadResult.value = await uploadImage(newImageName.value);
-        console.log("Success", uploadResult.value[0].name);
-        console.log("Image Url:", uploadResult.value[0].url);
-        console.log("Hash: ", uploadResult.value[0].hash);
+        console.log()
+        const imageUploadResult = await uploadImage(newImageName.value);
+        console.log(imageUploadResult);
+        console.log("Success", imageUploadResult[0].name);
+        console.log("Image Url:", imageUploadResult[0].url);
+        console.log("Hash: ", imageUploadResult[0].hash);
         const payload = {
           student_no: student_no.value,
           last_name: last_name.value,
