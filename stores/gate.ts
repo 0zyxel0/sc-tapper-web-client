@@ -1,22 +1,33 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 import { useRouter } from 'nuxt/app'
 import axios from 'axios'
+// Composable utility function import
+const { getBackendUrl, formatCurImageUrl } = useUtils()
 const router = useRouter()
 export const useGateStore = defineStore('gate', {
-    state: () => ({
-      historyList:[]
-    }),
-    getters: {
-     
+  state: () => ({
+    historyList: [],
+  }),
+  getters: {
+    getGateHistoryList(state) {
+      return state.historyList
     },
-    actions: {
-      async getGateHistory(){
-        try{
-
-        }catch(err){
-          console.log(err);
+  },
+  actions: {
+    async getGateHistory() {
+      try {
+        const myBase = await getBackendUrl()
+        const result = await axios.get('/api/gate/history')
+        if (result) {
+          this.historyList = result.data.map((item) => {
+            item.profile_avatar = myBase+item.profile_avatar
+            return item
+          })
+          return this.historyList // Return the updated history list
         }
+      } catch (err) {
+        console.log(err)
       }
-    }
-  })
-  
+    },
+  },
+})

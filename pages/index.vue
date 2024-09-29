@@ -63,7 +63,7 @@
 					<v-row no-gutters dense>
 						<v-col>
 							<v-infinite-scroll direction="horizontal">
-								<template v-for="item in historyList" :key="item">
+								<template v-for="item in gateStore.getGateHistoryList" :key="item">
 									<div class="pa-1" v-if="item">
 										<v-card width="120px" class="elevation-0">
 											<v-img height="90px" :src="item?.profile_avatar" contain></v-img>
@@ -87,6 +87,8 @@ const config = useRuntimeConfig();
 // Composable utility function import
 const { getBackendUrl, formatCurImageUrl } = useUtils();
 const base_url = config.public.apiBase;
+import { useGateStore } from "~/stores/gate";
+const gateStore = useGateStore();
 const cardid = ref(null);
 const currentProfile = ref(null);
 const currentPhoto = ref(null);
@@ -99,11 +101,7 @@ const date = ref(new Date());
 const cardMessage = ref("Scanner Ready");
 async function initialize() {
 	try {
-		const result = await axios.get("/api/gate/history");
-		if (result) {
-			const resultList = await updateImageUrls(result.data);
-			historyList.value = resultList;
-		}
+		await gateStore.getGateHistory();
 	} catch (err) {
 		console.log(err);
 	}
