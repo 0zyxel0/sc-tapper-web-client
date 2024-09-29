@@ -8,7 +8,7 @@
 							<v-card-text v-if="profileDetails">
 								<v-img
 									class="image_url mx-auto"
-									:src="imageBase + profileDetails.image_url"
+									:src="profileImage"
 									alt=""
 									lazy-src="https://fakeimg.pl/400x400?text=Photo"
 								/>
@@ -389,7 +389,7 @@ const image_id = ref(null);
 const profileDetails = ref({});
 const cardDetails = ref({});
 const avatarImage = ref(null);
-
+const profileImage = ref(null);
 // Profile Contacts
 const contactPersonDetails = ref(false);
 const ctName = ref(null);
@@ -407,9 +407,11 @@ const rules = ref({
 
 async function initialize() {
 	try {
-		const result = await axios.post(`/api/profile/${route.params.id}`);
-		await profileStore.getEmergencyContactDetails(route.params.id);
+		const result = await axios.post(`/api/profile/${route.params.id}`);		
 		if (result) {
+			// Construct Image URL
+			const myBase = await getBackendUrl();
+			profileImage.value = formatCurImageUrl(myBase, result.data[0].image_url);
 			profileDetails.value = result.data[0];
 			cardDetails.value = result.data[0].card;
 			profileid.value = result.data[0].id;
@@ -420,6 +422,10 @@ async function initialize() {
 			middle_name.value = result.data[0].middle_name;
 			image_id.value = result.data[0].image_id;
 			publicID.value = result.data[0].publicid;
+		}
+		const myEmergencyContact = await profileStore.getEmergencyContactDetails(route.params.id);
+		if(myEmergencyContact){
+
 		}
 	} catch (error) {
 		console.error("Failed to fetch data: ", error);
