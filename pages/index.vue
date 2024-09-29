@@ -94,7 +94,6 @@ const currentProfile = ref(null);
 const currentPhoto = ref(null);
 const isSubmitting = ref(false);
 const cooldownTimer = ref(null);
-const historyList = ref([]);
 const submitCooldown = 2000; // 2 seconds in milliseconds
 const cardInputRef = ref(null);
 const date = ref(new Date());

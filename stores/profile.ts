@@ -21,7 +21,9 @@ export const useProfileStore = defineStore('profile', {
         profile_publicid: profile_publicid,
       })
       if (result) {
-        this.emergencyContacts = result.data
+        if (result.data.length < 0) {
+          this.emergencyContacts = result.data
+        }
       }
     },
   },

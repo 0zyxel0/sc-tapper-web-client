@@ -610,7 +610,6 @@ async function saveContact() {
 		};
 		loading.value = true;
 		await axios.post("/api/profile/assignEmergencyContact", payload).then((res) => {
-			console.log(res);
 			toast.success("Successfully Saved Profile Contact");
 			loading.value = false;
 		});
