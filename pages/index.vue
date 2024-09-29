@@ -141,13 +141,13 @@ async function handleSubmit() {
 			clearInput();
 			startCooldown();
 		}
-		if (myProfileDetails) {
-			// Add Delay to the Request
+		if (myProfileDetails) {			
 			currentProfile.value = myProfileDetails;
-			currentPhoto.value = base_url + myProfileDetails.profile.image_url;
-			// await new Promise((resolve) => setTimeout(resolve, 2000));
+			const myBase = await getBackendUrl();
+			currentPhoto.value = formatCurImageUrl(myBase,myProfileDetails.profile.image_url);
 			clearInput();
 			isSubmitting.value = false;
+			// Add Delay to the Request
 			startCooldown();
 		}
 	}
@@ -165,18 +165,6 @@ function startCooldown() {
 		clearProfileReading();
 		cardMessage.value = "Scanner Ready";
 	}, submitCooldown);
-}
-
-// Function to loop through the array and update the profile_avatar
-async function updateImageUrls(students) {
-	const myBase = await getBackendUrl();
-	return students.map((student) => {
-		let updatedUrl = formatCurImageUrl(myBase, student.profile_avatar); // Call your utility function
-		return {
-			...student,
-			profile_avatar: updatedUrl, // Update the profile_avatar with the result of formatCurImageUrl
-		};
-	});
 }
 
 watch(isSubmitting, () => {
