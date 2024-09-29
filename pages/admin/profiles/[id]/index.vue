@@ -618,18 +618,6 @@ async function saveContact() {
 	}
 }
 
-async function getEmergencyContact(id) {
-	try {
-		loading.value = true;
-		await axios.post("/api/profile/cemergencyContactDetails", { profile_publicid: id }).then((res) => {
-			console.log(res);
-			loading.value = false;
-		});
-	} catch (err) {
-		console.log(err);
-	}
-}
-
 onMounted(async () => {
 	await initialize();
 });
