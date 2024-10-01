@@ -55,10 +55,16 @@ export const useUtils = () => {
     }
   };
 
+  const getImageServerUrl = async () => {
+    const myUrl = await axios.get('/api/settings/currentDeviceIp');
+    return myUrl.data
+  }
+
   return {
     getBackendUrl,
     formatCurImageUrl,
     uploadImage,
     uploadUpdateImage,
+    getImageServerUrl
   }
 }

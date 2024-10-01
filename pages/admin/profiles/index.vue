@@ -187,7 +187,7 @@ import { useToast } from "vue-toastification";
 import axios from "axios";
 
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl, uploadImage } = useUtils();
+const { getBackendUrl, formatCurImageUrl, uploadImage, getImageServerUrl} = useUtils();
 
 const config = useRuntimeConfig();
 const toast = useToast();
@@ -350,7 +350,7 @@ async function onSubmit() {
 
 // Function to loop through the array and update the image_url
 async function updateImageUrls(students) {
-	const myBase = await getBackendUrl();
+	const myBase = await getImageServerUrl();
 	return students.map((student) => {
 		const updatedUrl = formatCurImageUrl(myBase, student.image_url); // Call your utility function
 		return {
@@ -383,8 +383,6 @@ const buttonText = computed({
 // Show Assign Card Dialog
 async function showAssignCardDialog(item) {
 	assignCardDialog.value = true;
-	//console.log(item);
-	//console.log("Profile Public ID: ", item.id)
 	studentno.value = item.studentno;
 	profile_publicid.value = item.publicid;
 	profileid.value = item.id;
