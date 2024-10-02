@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useRouter } from 'nuxt/app'
 import axios from 'axios'
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl } = useUtils()
+const { getBackendUrl, formatCurImageUrl ,getImageServerUrl} = useUtils()
 const router = useRouter()
 export const useGateStore = defineStore('gate', {
   state: () => ({
@@ -16,7 +16,7 @@ export const useGateStore = defineStore('gate', {
   actions: {
     async getGateHistory() {
       try {
-        const myBase = await getBackendUrl()
+        const myBase = await getImageServerUrl()
         const result = await axios.get('/api/gate/history')
         if (result) {
           this.historyList = result.data.map((item) => {
