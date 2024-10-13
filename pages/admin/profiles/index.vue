@@ -298,7 +298,7 @@ async function onSubmit() {
 				const formData = new FormData();
 				formData.append('files', newImageName.value);
 				try {
-					const result = await axios.post(`http://localhost:1337/api/upload`, formData, {
+					const result = await axios.post(`${config.public.apiBase}/api/upload`, formData, {
 						headers: {
 							'Content-Type': 'multipart/form-data'
 						}
