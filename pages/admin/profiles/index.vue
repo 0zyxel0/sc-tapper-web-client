@@ -9,16 +9,8 @@
 
 						<v-spacer></v-spacer>
 
-						<v-text-field
-							v-model="search"
-							density="compact"
-							label="Search"
-							prepend-inner-icon="mdi-magnify"
-							variant="solo-filled"
-							flat
-							hide-details
-							single-line
-						></v-text-field>
+						<v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+							variant="solo-filled" flat hide-details single-line></v-text-field>
 					</v-card-title>
 
 					<v-divider></v-divider>
@@ -27,7 +19,8 @@
 							<v-avatar :image="item.image_url" size="45" tile></v-avatar>
 						</template>
 						<template v-slot:[`item.is_card_assign`]="{ item }">
-							<v-icon size="35" color="grey" v-if="item.is_card_assign == false">mdi-smart-card-off</v-icon>
+							<v-icon size="35" color="grey"
+								v-if="item.is_card_assign == false">mdi-smart-card-off</v-icon>
 							<v-icon size="35" color="primary" v-else>mdi-smart-card</v-icon>
 						</template>
 						<template v-slot:[`item.actions`]="{ item }">
@@ -40,7 +33,8 @@
 </v-tooltip> -->
 							<v-tooltip text="View Profile" location="top">
 								<template v-slot:activator="{ props }">
-									<v-btn v-bind="props" variant="text" icon="mdi-open-in-new" :to="`profiles/${item.publicid}`"> </v-btn>
+									<v-btn v-bind="props" variant="text" icon="mdi-open-in-new"
+										:to="`profiles/${item.publicid}`"> </v-btn>
 								</template>
 							</v-tooltip>
 							<!-- <v-tooltip text="Edit Profile" location="top">
@@ -68,15 +62,12 @@
 				<v-card-text>
 					<v-row>
 						<v-col cols="4">
-							<v-img
-								:src="avatarImage ? imagePreviewURL : ''"
-								alt=""
+							<v-img :src="avatarImage ? imagePreviewURL : ''" alt=""
 								lazy-src="https://fakeimg.pl/400x400?text=Photo"
-								style="max-width: 100%; object-fit: cover"
-								height="30vh"
-							/>
+								style="max-width: 100%; object-fit: cover" height="30vh" />
 
-							<v-btn color="primary" class="text-none mt-2" block round depressed :loading="isSelecting" @click="onButtonClick">
+							<v-btn color="primary" class="text-none mt-2" block round depressed :loading="isSelecting"
+								@click="onButtonClick">
 								<v-icon start> mdi-cloud-upload </v-icon>
 								<!-- {{ buttonText || defaultButtonText }} -->
 							</v-btn>
@@ -84,26 +75,21 @@
 											class="text-none mt-2" @click="clearImagePreview()" block round
 											depressed>Clear Image</v-btn> -->
 
-							<v-file-input
-								:rules="rules.photo"
-								v-model="avatarImage"
-								accept="image/png, image/jpeg, image/bmp"
-								density="compact"
-								prepend-icon="mdi-camera"
-								label="Upload Image"
-								ref="uploader"
-								required
-								class="d-none"
-								@change="onFileChange"
-								@click:clear="clearImagePreview()"
-							></v-file-input>
+							<v-file-input :rules="rules.photo" v-model="avatarImage"
+								accept="image/png, image/jpeg, image/bmp" density="compact" prepend-icon="mdi-camera"
+								label="Upload Image" ref="uploader" required class="d-none" @change="onFileChange"
+								@click:clear="clearImagePreview()"></v-file-input>
 						</v-col>
 						<v-col cols="8">
 							<v-form v-model="valid" ref="loginForm" lazy-validation>
-								<v-text-field v-model="student_no" :rules="rules.studentno" label="Student No"></v-text-field>
-								<v-text-field v-model="last_name" :rules="rules.lastname" label="Last name"></v-text-field>
-								<v-text-field v-model="first_name" :rules="rules.firstname" label="First name"></v-text-field>
-								<v-text-field v-model="middle_name" :rules="rules.middlename" label="Middle name"></v-text-field>
+								<v-text-field v-model="student_no" :rules="rules.studentno"
+									label="Student No"></v-text-field>
+								<v-text-field v-model="last_name" :rules="rules.lastname"
+									label="Last name"></v-text-field>
+								<v-text-field v-model="first_name" :rules="rules.firstname"
+									label="First name"></v-text-field>
+								<v-text-field v-model="middle_name" :rules="rules.middlename"
+									label="Middle name"></v-text-field>
 							</v-form>
 						</v-col>
 					</v-row>
@@ -111,7 +97,9 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn variant="elevated" :disabled="loading" :loading="loading" color="success" @click="onSubmit"> Submit </v-btn>
+					<v-btn variant="elevated" :disabled="loading" :loading="loading" color="success" @click="onSubmit">
+						Submit
+					</v-btn>
 					<v-btn variant="elevated" color="error" @click="cancelAddRecord"> Cancel </v-btn>
 					<v-spacer></v-spacer>
 					<!-- <v-btn class="mt-4" color="primary" variant="outlined" size="large"
@@ -126,13 +114,8 @@
 				<v-form v-model="cardvalid" ref="assignCardForm" lazy-validation>
 					<v-card-title> Assign Card to {{ studentno }} </v-card-title>
 					<v-card-text>
-						<v-text-field
-							:rules="rules.cardid"
-							v-model="cardid"
-							label="Assign card"
-							prepend-inner-icon="mdi-card-account-details"
-							clearable
-						></v-text-field>
+						<v-text-field :rules="rules.cardid" v-model="cardid" label="Assign card"
+							prepend-inner-icon="mdi-card-account-details" clearable></v-text-field>
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
@@ -145,15 +128,11 @@
 
 		<!-- Start Delete Profile Dialog Box -->
 		<v-dialog v-model="deleteProfileDialog" width="auto">
-			<v-card
-				max-width="400"
-				prepend-icon="mdi-delete-alert"
-				color="blue-grey-darken-4"
-				text="Are you sure you want to delete this profile?"
-				title="Delete Profile"
-			>
+			<v-card max-width="400" prepend-icon="mdi-delete-alert" color="blue-grey-darken-4"
+				text="Are you sure you want to delete this profile?" title="Delete Profile">
 				<template v-slot:actions>
-					<v-btn variant="tonal" :loading="loading" text="Delete" @click="deleteItem" prepend-icon="mdi-delete" color="red"></v-btn>
+					<v-btn variant="tonal" :loading="loading" text="Delete" @click="deleteItem"
+						prepend-icon="mdi-delete" color="red"></v-btn>
 					<v-btn variant="tonal" text="Cancel" @click="deleteProfileDialog = false"></v-btn>
 				</template>
 			</v-card>
@@ -187,7 +166,7 @@ import { useToast } from "vue-toastification";
 import axios from "axios";
 
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl, uploadImage, getImageServerUrl} = useUtils();
+const { getBackendUrl, formatCurImageUrl, uploadImage, getImageServerUrl } = useUtils();
 
 const config = useRuntimeConfig();
 const toast = useToast();
@@ -262,7 +241,7 @@ async function initialize() {
 		const { data: result } = await useFetch("/api/getProfileList");
 		if (result) {
 			const resultList = await updateImageUrls(result.value);
-			if(resultList){
+			if (resultList) {
 				profileList.value = resultList;
 			}
 		}
@@ -313,26 +292,29 @@ async function onSubmit() {
 	if (valid) {
 		if (newImageName.value) {
 			try {
-				uploadResult.value = await uploadImage(newImageName.value);
-				const payload = {
-					student_no: student_no.value,
-					last_name: last_name.value,
-					first_name: first_name.value,
-					middle_name: middle_name.value,
-					publicid: uploadResult.value[0].hash,
-					image_url: uploadResult.value[0].url,
-					image_id: uploadResult.value[0].id,
-				};
-				await axios.post(`/api/createProfile`, payload).then(() => {
-					dialog.value = false;
-					loginForm.value?.reset();
-					imagePreviewURL.value = "";
-					avatarImage.value = null;
-					toast.success("Successfully created!");
-					loading.value = false;
-					newImageName.value = null;
-					initialize();
-				});
+				const imgResult = await uploadImage(newImageName.value);
+				if (imgResult) {
+					const payload = {
+						student_no: student_no.value,
+						last_name: last_name.value,
+						first_name: first_name.value,
+						middle_name: middle_name.value,
+						publicid: imgResult[0].hash,
+						image_url: imgResult[0].url,
+						image_id: imgResult[0].id,
+					};
+					await axios.post(`/api/createProfile`, payload).then(() => {
+						dialog.value = false;
+						loginForm.value?.reset();
+						imagePreviewURL.value = "";
+						avatarImage.value = null;
+						toast.success("Successfully created!");
+						loading.value = false;
+						newImageName.value = null;
+						initialize();
+					});
+				}
+
 			} catch (error) {
 				console.error(error);
 				loading.value = false;
