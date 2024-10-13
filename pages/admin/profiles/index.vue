@@ -164,6 +164,9 @@ definePageMeta({
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "vue-toastification";
 import axios from "axios";
+import FormData from "form-data";
+import fs from "fs";
+import path from 'path-browserify';
 
 // Composable utility function import
 const { getBackendUrl, formatCurImageUrl, uploadImage, getImageServerUrl } = useUtils();
@@ -292,27 +295,41 @@ async function onSubmit() {
 	if (valid) {
 		if (newImageName.value) {
 			try {
-				const imgResult = await uploadImage(newImageName.value);
-				if (imgResult) {
-					const payload = {
-						student_no: student_no.value,
-						last_name: last_name.value,
-						first_name: first_name.value,
-						middle_name: middle_name.value,
-						publicid: imgResult[0].hash,
-						image_url: imgResult[0].url,
-						image_id: imgResult[0].id,
-					};
-					await axios.post(`/api/createProfile`, payload).then(() => {
-						dialog.value = false;
-						loginForm.value?.reset();
-						imagePreviewURL.value = "";
-						avatarImage.value = null;
-						toast.success("Successfully created!");
-						loading.value = false;
-						newImageName.value = null;
-						initialize();
+				const formData = new FormData();
+				formData.append('files', newImageName.value);
+				try {
+					const result = await axios.post(`http://localhost:1337/api/upload`, formData, {
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
 					});
+					if (result) {
+						console.log(result.data);
+
+						const payload = {
+							student_no: student_no.value,
+							last_name: last_name.value,
+							first_name: first_name.value,
+							middle_name: middle_name.value,
+							publicid: result.data[0].hash,
+							image_url: result.data[0].url,
+							image_id: result.data[0].id,
+						};
+						await axios.post(`/api/createProfile`, payload).then(() => {
+							dialog.value = false;
+							loginForm.value?.reset();
+							imagePreviewURL.value = "";
+							avatarImage.value = null;
+							toast.success("Successfully created!");
+							loading.value = false;
+							newImageName.value = null;
+							initialize();
+						});
+
+					}
+				} catch (error) {
+					console.error('Error uploading image: ', error);
+					throw error;
 				}
 
 			} catch (error) {
@@ -329,6 +346,9 @@ async function onSubmit() {
 		console.log(errors[0].errorMessages[0]);
 	}
 }
+
+
+
 
 // Function to loop through the array and update the image_url
 async function updateImageUrls(students) {
