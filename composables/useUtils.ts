@@ -20,8 +20,7 @@ export const useUtils = () => {
     try {
       const result = await axios.post(`${config.public.apiBase}/api/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${config.public.apiToken}`
+          'Content-Type': 'multipart/form-data'
         }
       });
       if(result){
