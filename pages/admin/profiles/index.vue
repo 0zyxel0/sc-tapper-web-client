@@ -302,6 +302,8 @@ async function onSubmit() {
 						headers: {
 							'Content-Type': 'multipart/form-data'
 						}
+					}).catch(err=>{
+						console.log(err);
 					});
 					if (result) {
 						console.log(result.data);
