@@ -347,7 +347,7 @@ const profileStore = useProfileStore();
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
-const { getBackendUrl, formatCurImageUrl, uploadUpdateImage } = useUtils();
+const { getBackendUrl, formatCurImageUrl, uploadUpdateImage, getImageServerUrl } = useUtils();
 const config = useRuntimeConfig();
 const imageBase = config.public.imageBase;
 // Dialog box
@@ -410,7 +410,7 @@ async function initialize() {
 		const result = await axios.post(`/api/profile/${route.params.id}`);		
 		if (result) {
 			// Construct Image URL
-			const myBase = await getBackendUrl();
+			const myBase = await getImageServerUrl();
 			profileImage.value = formatCurImageUrl(myBase, result.data[0].image_url);
 			profileDetails.value = result.data[0];
 			cardDetails.value = result.data[0].card;

@@ -85,7 +85,7 @@
 import axios from "axios";
 const config = useRuntimeConfig();
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl } = useUtils();
+const { getBackendUrl, formatCurImageUrl, getImageServerUrl} = useUtils();
 const base_url = config.public.apiBase;
 import { useGateStore } from "~/stores/gate";
 const gateStore = useGateStore();
@@ -143,7 +143,7 @@ async function handleSubmit() {
 		}
 		if (myProfileDetails) {			
 			currentProfile.value = myProfileDetails;
-			const myBase = await getBackendUrl();
+			const myBase = await getImageServerUrl();
 			currentPhoto.value = formatCurImageUrl(myBase,myProfileDetails.profile.image_url);
 			clearInput();
 			isSubmitting.value = false;

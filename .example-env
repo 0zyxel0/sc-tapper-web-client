@@ -3,3 +3,4 @@ BASE_URL=http://localhost:1337
 API_TOKEN=
 IMAGEBASE_URL=http://localhost:1337
 STRAPI_BASEURL=http://localhost:1337
+DEVICE_BASEURL=http://127.0.0.1

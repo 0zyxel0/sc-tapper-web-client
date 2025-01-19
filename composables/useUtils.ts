@@ -18,13 +18,14 @@ export const useUtils = () => {
     const formData = new FormData();
     formData.append('files', file);
     try {
-      const response = await axios.post(`${config.public.apiBase}/api/upload`, formData, {
+      const result = await axios.post(`${config.public.apiBase}/api/upload`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${config.public.apiToken}`
+          'Content-Type': 'multipart/form-data'
         }
       });
-      return response.data;
+      if(result){
+        return result.data;
+      }
     } catch (error) {
       console.error('Error uploading image: ', error);
       throw error;
@@ -55,10 +56,16 @@ export const useUtils = () => {
     }
   };
 
+  const getImageServerUrl = async () => {
+    const myUrl = await axios.get('/api/settings/currentDeviceIp');
+    return myUrl.data
+  }
+
   return {
     getBackendUrl,
     formatCurImageUrl,
     uploadImage,
     uploadUpdateImage,
+    getImageServerUrl
   }
 }
