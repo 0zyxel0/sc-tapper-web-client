@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   pages: true,
   ssr:false,
+  //@ts-ignore
   server: {
     hmr: {
       protocol: 'ws',
@@ -15,7 +16,6 @@ export default defineNuxtConfig({
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
-        // @ts-expect-error
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
