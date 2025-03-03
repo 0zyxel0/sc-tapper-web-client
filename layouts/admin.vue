@@ -28,7 +28,7 @@
       <!-- <template v-slot:append>
         <div class="mx-5">
           <p class="nav-footer-title">System Name</p>
-          <v-btn @click="signOut({ callbackUrl: '/auth/signin' })" class="logout-btn" color="red" block><v-icon
+          <v-btn @click="logout()" class="logout-btn" color="red" block><v-icon
               start>mdi-power</v-icon> Sign out</v-btn>
         </div>
       </template> -->
@@ -38,6 +38,39 @@
       <v-toolbar-title>
         Tapper - ID Management
       </v-toolbar-title>
+      <div class="mr-2">
+        <v-menu min-width="200px" rounded>
+          <template v-slot:activator="{ props }">
+            <v-btn icon v-bind="props" variant="tonal">
+              <v-avatar color="deep-purple" size="large">
+                <v-icon icon="mdi-account-circle" color="white"></v-icon>
+              </v-avatar>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <div class="mx-auto text-center">
+                <v-avatar color="deep-purple">
+                  <v-icon icon="mdi-account-circle"></v-icon>
+                </v-avatar>
+                <h3 class="mt-2">{{ userInfo.username }}</h3>
+                <p class="text-caption mt-1">{{ userInfo.email }}</p>
+                
+                <v-divider class="my-3"></v-divider>
+                <v-btn
+                  prepend-icon="mdi-logout"
+                  variant="text"
+                  class="text-capitalize"
+                  rounded
+                  @click="logout()"
+                >
+                  Logout
+                </v-btn>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        </div>
     </v-app-bar>
 
     <v-main>
@@ -50,6 +83,14 @@
 </template>
 
 <script setup>
+import { storeToRefs } from "pinia";
+import { useMyAuthStore } from "~/stores/auth";
+const router = useRouter();
+const { logUserOut } = useMyAuthStore();
+const { authenticated } = storeToRefs(useMyAuthStore());
+const { userData } = storeToRefs(useMyAuthStore());
+
+const userInfo = ref(userData?.value.user);
 const drawer = ref(true);
 const items = ref([
   { text: "Dashboard", route: "/admin/", icon: "mdi-view-dashboard" },
@@ -57,6 +98,11 @@ const items = ref([
   { text: "Profiles", route: "/admin/profiles", icon: "mdi-badge-account-outline" },
   { text: "Settings", route: "/admin/settings", icon: "mdi-cog-outline" },
 ]);
+
+async function logout() {
+  logUserOut();
+  router.push("/auth/signin");
+}
 </script>
 
 <style scoped>
