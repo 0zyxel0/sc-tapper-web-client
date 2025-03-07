@@ -67,7 +67,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useUseUpload } from "~/composables/useUpload";
 //@ts-ignore
 import { v4 as uuidv4 } from "uuid";
 
