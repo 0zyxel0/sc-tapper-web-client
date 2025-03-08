@@ -18,7 +18,8 @@ export const useMyAuthStore = defineStore({
   actions: {
     // Login Function
     async authenticateUser({ identifier, password }: UserPayloadInterface) {
-      const baseUrl = useRuntimeConfig().public.apiBase;
+      const backend = await axios.get('/api/settings/connectBackend');
+      const baseUrl = backend.data;
       const { data, pending, error }: any = await useFetch(`${baseUrl}/api/auth/local`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
