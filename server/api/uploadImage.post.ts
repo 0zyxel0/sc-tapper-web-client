@@ -2,7 +2,7 @@ import FormData from "form-data";
 import axios from 'axios';
 import * as dotenv from 'dotenv'
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   form.append('files', body.name);
 
   try {
-    const response = await axios.post(`${process.env.BASE_URL}/api/upload`, form, {
+    const response = await axios.post(`${process.env.STRAPI_BASEURL}/api/upload`, form, {
       headers: {
         ...form.getHeaders(),
         Authorization: `Bearer ${process.env.API_UPLOAD_TOKEN}`

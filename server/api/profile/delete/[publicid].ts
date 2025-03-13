@@ -1,7 +1,7 @@
 import axios from "axios"
 import * as dotenv from "dotenv"
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
   const publicid = getRouterParam(event, "publicid")
@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
     const imageid = body.image_id
 
     // Delete profile details in profiles table
-    const deleteProfileResult = await axios.delete(`${BASE_URL}/api/profiles/delete/${publicid}`);
+    const deleteProfileResult = await axios.delete(`${STRAPI_BASEURL}/api/profiles/delete/${publicid}`);
 
     // Delete profile photos from files table
-    const deletePhotoResultt = await axios.delete(`${BASE_URL}/api/upload/files/${imageid}`);
+    const deletePhotoResultt = await axios.delete(`${STRAPI_BASEURL}/api/upload/files/${imageid}`);
 
     if (deletePhotoResultt) {
       return deleteProfileResult.data;

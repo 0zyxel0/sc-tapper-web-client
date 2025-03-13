@@ -1,13 +1,13 @@
 import axios from 'axios'
 import * as dotenv from 'dotenv'
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
 
   const profileid = getRouterParam(event, 'profileid')
   try {
-    const myResult = await axios.delete(`${BASE_URL}/api/card/unlink-profile-card/${profileid}`)
+    const myResult = await axios.delete(`${STRAPI_BASEURL}/api/card/unlink-profile-card/${profileid}`)
     if(myResult) {
       return myResult.data;
     }

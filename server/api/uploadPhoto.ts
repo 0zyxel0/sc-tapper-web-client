@@ -2,7 +2,7 @@ import FormData from "form-data";
 import axios from "axios";
 import * as dotenv from 'dotenv'
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
  
@@ -15,41 +15,15 @@ export default defineEventHandler(async (event) => {
 
     console.log("Successfully Upload");
     console.log(formData);
-    const response = await axios.post('http://localhost:1337/api/upload', formData, {
+    const response = await axios.post(`${STRAPI_BASEURL}/api/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${process.env.API_UPLOAD_TOKEN}`
       }
     });
-
-    // const response = await axios.post(`${BASE_URL}/api/upload`, formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //   }
-    // });
-    // if (response) {
-    //   console.log(response);
-    //   return response;
-    // }
     return response.data;
   } catch (error) {
     console.error('Error uploading image: ', error);
     throw error;
   }
-
-
-  // const form = new FormData();
-  // form.append('files', body.name);
-
-  // try {
-  //   const response = await axios.post(`${process.env.BASE_URL}/api/upload`, form, {
-  //     headers: {
-  //       ...form.getHeaders(),
-  //       Authorization: `Bearer ${process.env.API_UPLOAD_TOKEN}`
-  //     }
-  //   });
-  //   return response.data;
-  // } catch (error) {
-  //   throw createError({ statusCode: 500, message: 'Image upload failed'});
-  // }
 })

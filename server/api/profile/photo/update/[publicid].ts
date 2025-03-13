@@ -1,7 +1,7 @@
 import axios from "axios"
 import * as dotenv from "dotenv"
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
   const publicid = getRouterParam(event, "publicid")
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       image_id: body.image_id
     }
 
-    const myResult = await axios.put(`${BASE_URL}/api/profiles/photo/update/${publicid}`, myPayload)
+    const myResult = await axios.put(`${STRAPI_BASEURL}/api/profiles/photo/update/${publicid}`, myPayload)
     if(myResult) {
       return myResult.data;
     }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as dotenv from 'dotenv'
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       profileid: body.profileid
     }
 
-    const myResult = await axios.post(`${BASE_URL}/api/card/assign-profile-card`, myPayload)
+    const myResult = await axios.post(`${STRAPI_BASEURL}/api/card/assign-profile-card`, myPayload)
     if (myResult) {
       return myResult.data;
     }

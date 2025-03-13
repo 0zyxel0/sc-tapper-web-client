@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as dotenv from 'dotenv'
 dotenv.config()
-const BASE_URL = process.env.BASE_URL
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
       profile_avatar: body.profile_avatar
     }
 
-    const myResult = await axios.post(`${BASE_URL}/api/gate-history/create`, myPayload)
+    const myResult = await axios.post(`${STRAPI_BASEURL}/api/gate-history/create`, myPayload)
     if (myResult) {
       return myResult.data;
     }
