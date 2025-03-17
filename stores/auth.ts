@@ -20,7 +20,10 @@ export const useMyAuthStore = defineStore({
     async authenticateUser({ identifier, password }: UserPayloadInterface) {
       const backend = await axios.get('/api/settings/connectBackend');
       const baseUrl = backend.data;
-      const { data, pending, error }: any = await useFetch(`${baseUrl}/api/auth/local`, {
+      console.log(`Current Base URL : ${baseUrl}`);
+      const loginEndpoint = `${baseUrl}/api/auth/local`;
+      console.log(`Contacting Login Endpoint : ${loginEndpoint}`);
+      const { data, pending, error }: any = await useFetch(loginEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: {
