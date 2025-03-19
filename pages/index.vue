@@ -117,14 +117,16 @@ async function clearProfileReading() {
 async function searchCardProfile(id) {
 	try {
 		const baseUrl = await getBackendUrl();
-
-		const myResult = await axios.get(`${baseUrl}/api/card/search-card/${id}`);
-		if (myResult) {
-			if (myResult.data.length == 0) {
-				cardMessage.value = "Card Not Registered. Please Try Again";
-				return false;
-			} else {
-				return myResult.data[0];
+		if (baseUrl) {
+			console.log(`Connecting To : ${baseUrl}`);
+			const myResult = await axios.get(`${baseUrl}/api/card/search-card/${id}`);
+			if (myResult) {
+				if (myResult.data.length == 0) {
+					cardMessage.value = "Card Not Registered. Please Try Again";
+					return false;
+				} else {
+					return myResult.data[0];
+				}
 			}
 		}
 	} catch (err) {
