@@ -85,7 +85,7 @@
 import axios from "axios";
 const config = useRuntimeConfig();
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl, getImageServerUrl} = useUtils();
+const { getBackendUrl, formatCurImageUrl, getImageServerUrl } = useUtils();
 const base_url = config.public.apiBase;
 import { useGateStore } from "~/stores/gate";
 const gateStore = useGateStore();
@@ -116,13 +116,15 @@ async function clearProfileReading() {
 
 async function searchCardProfile(id) {
 	try {
-		const result = await axios.get(`/api/getCardProfile?cardid=${id}`);
-		if (result) {
-			if (result.data.length == 0) {
+		const baseUrl = await getBackendUrl();
+
+		const myResult = await axios.get(`${baseUrl}/api/card/search-card/${id}`);
+		if (myResult) {
+			if (myResult.data.length == 0) {
 				cardMessage.value = "Card Not Registered. Please Try Again";
 				return false;
 			} else {
-				return result.data[0];
+				return myResult.data[0];
 			}
 		}
 	} catch (err) {
@@ -141,10 +143,10 @@ async function handleSubmit() {
 			clearInput();
 			startCooldown();
 		}
-		if (myProfileDetails) {			
+		if (myProfileDetails) {
 			currentProfile.value = myProfileDetails;
 			const myBase = await getImageServerUrl();
-			currentPhoto.value = formatCurImageUrl(myBase,myProfileDetails.profile.image_url);
+			currentPhoto.value = formatCurImageUrl(myBase, myProfileDetails.profile.image_url);
 			clearInput();
 			isSubmitting.value = false;
 			// Add Delay to the Request
