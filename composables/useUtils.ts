@@ -10,8 +10,8 @@ export const useUtils = () => {
   }
 
   const formatCurImageUrl = (serverURI: string ,asset: string) => {
-    const combi = serverURI+asset;
-    return combi;    
+    const combinedUrl = serverURI+asset;
+    return combinedUrl;    
   };
 
   const uploadImage = async (file) => {

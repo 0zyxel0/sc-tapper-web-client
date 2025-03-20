@@ -147,8 +147,8 @@ async function handleSubmit() {
 		}
 		if (myProfileDetails) {
 			currentProfile.value = myProfileDetails;
-			const myBase = await getImageServerUrl();
-			currentPhoto.value = formatCurImageUrl(myBase, myProfileDetails.profile.image_url);
+			const baseUrl = await getBackendUrl();		
+			currentPhoto.value = formatCurImageUrl(baseUrl, myProfileDetails.profile.image_url);
 			clearInput();
 			isSubmitting.value = false;
 			// Add Delay to the Request
