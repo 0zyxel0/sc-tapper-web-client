@@ -1,4 +1,4 @@
-const DEVICE_BASEURL = process.env.DEVICE_BASEURL || 'http://localhost:1337'
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL
 export default defineEventHandler(() => {
-      return DEVICE_BASEURL
+      return STRAPI_BASEURL
 })
