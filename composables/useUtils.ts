@@ -11,6 +11,7 @@ export const useUtils = () => {
 
   const formatCurImageUrl = (serverURI: string ,asset: string) => {
     const combinedUrl = serverURI+asset;
+    console.log(`Mapping Asset : ${combinedUrl}`);
     return combinedUrl;    
   };
 
@@ -57,7 +58,7 @@ export const useUtils = () => {
   };
 
   const getImageServerUrl = async () => {
-    const myUrl = await axios.get('/api/settings/currentDeviceIp');
+    const myUrl = await axios.get('/api/settings/connectBackend');
     return myUrl.data
   }
 
