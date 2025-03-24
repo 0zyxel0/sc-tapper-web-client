@@ -153,6 +153,8 @@ async function handleSubmit() {
 			isSubmitting.value = false;
 			// Add Delay to the Request
 			startCooldown();
+			// Refresh History
+			await gateStore.getGateHistory();
 		}
 	}
 }
