@@ -1,4 +1,4 @@
-const STRAPI_BASEURL = process.env.STRAPI_BASEURL || 'http://localhost:1337'
+const STRAPI_BASEURL = process.env.STRAPI_BASEURL;
 export default defineEventHandler(() => {
       return STRAPI_BASEURL
 })
