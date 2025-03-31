@@ -6,15 +6,11 @@
 					<v-col cols="12" class="text-center">
 						<v-card elevation="0">
 							<v-card-text v-if="profileDetails">
-								<v-img
-									class="image_url mx-auto"
-									:src="profileImage"
-									alt=""
-									lazy-src="https://fakeimg.pl/400x400?text=Photo"
-								/>
-								<v-btn variant="tonal" color="primary" class="text-none mt-2" pre @click="updateImageDialogbox = true" round depressed>
-									<v-icon>mdi-camera</v-icon></v-btn
-								>
+								<v-img class="image_url mx-auto" :src="profileImage" alt=""
+									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-btn variant="tonal" color="primary" class="text-none mt-2" pre
+									@click="updateImageDialogbox = true" round depressed>
+									<v-icon>mdi-camera</v-icon></v-btn>
 
 								<div class="profile-name">
 									<p>{{ profileDetails.first_name }} {{ profileDetails.last_name }}</p>
@@ -24,17 +20,20 @@
 								</div>
 							</v-card-text>
 							<v-card-text v-else>
-								<v-img class="image_url mx-auto" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-img class="image_url mx-auto" alt=""
+									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
 							</v-card-text>
 
 							<v-divider class="mt-4"></v-divider>
 							<v-card-actions class="mx-2 my-2">
 								<v-row>
 									<v-col cols="12" md="6">
-										<v-btn prepend-icon="mdi-pencil" color="primary" variant="outlined" @click="updateProfileDialog = true" block>Edit</v-btn>
+										<v-btn prepend-icon="mdi-pencil" color="primary" variant="outlined"
+											@click="updateProfileDialog = true" block>Edit</v-btn>
 									</v-col>
 									<v-col cols="12" md="6">
-										<v-btn prepend-icon="mdi-delete" color="red" variant="outlined" block @click="deleteProfileDialog = true">Delete</v-btn>
+										<v-btn prepend-icon="mdi-delete" color="red" variant="outlined" block
+											@click="deleteProfileDialog = true">Delete</v-btn>
 									</v-col>
 								</v-row>
 							</v-card-actions>
@@ -43,7 +42,8 @@
 					<v-col cols="12">
 						<v-card elevation="0">
 							<v-card-text>
-								<p class="font-weight-bold"><v-icon aria-hidden="false" size="30" color="primary">mdi-card-account-details</v-icon> Card Details</p>
+								<p class="font-weight-bold"><v-icon aria-hidden="false" size="30"
+										color="primary">mdi-card-account-details</v-icon> Card Details</p>
 								<v-divider class="my-2"></v-divider>
 								<div class="mt-3" v-if="profileDetails.is_card_assign == true">
 									<v-row dense>
@@ -57,7 +57,8 @@
 											<p class="text-caption font-weight-bold">Status:</p>
 										</v-col>
 										<v-col cols="8">
-											<p v-if="cardDetails.is_active == true"><v-badge dot color="success" inline></v-badge>Active</p>
+											<p v-if="cardDetails.is_active == true"><v-badge dot color="success"
+													inline></v-badge>Active</p>
 											<p v-else><v-badge dot color="error" inline></v-badge>Inactive</p>
 										</v-col>
 									</v-row>
@@ -69,20 +70,12 @@
 							</v-card-text>
 							<v-divider></v-divider>
 							<v-card-actions>
-								<v-btn
-									v-if="profileDetails.is_card_assign == true"
-									prepend-icon="mdi-link-off"
-									class="my-2"
-									color="red"
-									variant="outlined"
-									block
-									@click="showUnlinkDialogBox"
-									>Unlink</v-btn
-								>
+								<v-btn v-if="profileDetails.is_card_assign == true" prepend-icon="mdi-link-off"
+									class="my-2" color="red" variant="outlined" block
+									@click="showUnlinkDialogBox">Unlink</v-btn>
 
-								<v-btn v-else prepend-icon="mdi-link-plus" class="my-2" color="primary" variant="outlined" block @click="assignCardDialog = true"
-									>Link Card</v-btn
-								>
+								<v-btn v-else prepend-icon="mdi-link-plus" class="my-2" color="primary"
+									variant="outlined" block @click="assignCardDialog = true">Link Card</v-btn>
 							</v-card-actions>
 						</v-card>
 					</v-col>
@@ -101,10 +94,14 @@
 						<v-tabs-window-item :value="1">
 							<v-card elevation="0">
 								<v-card-text>
-									<v-text-field :model-value="profileDetails.studentno" label="Student No" readonly></v-text-field>
-									<v-text-field :model-value="profileDetails.last_name" label="Last name" readonly></v-text-field>
-									<v-text-field :model-value="profileDetails.first_name" label="First name" readonly></v-text-field>
-									<v-text-field :model-value="profileDetails.middle_name" label="Middle name" readonly></v-text-field>
+									<v-text-field :model-value="profileDetails.studentno" label="Student No"
+										readonly></v-text-field>
+									<v-text-field :model-value="profileDetails.last_name" label="Last name"
+										readonly></v-text-field>
+									<v-text-field :model-value="profileDetails.first_name" label="First name"
+										readonly></v-text-field>
+									<v-text-field :model-value="profileDetails.middle_name" label="Middle name"
+										readonly></v-text-field>
 								</v-card-text>
 							</v-card>
 						</v-tabs-window-item>
@@ -122,9 +119,12 @@
 							</v-card>
 							<v-card elevation="0" v-else>
 								<v-card-text>
-									<v-text-field v-model="profileStore.myEmergencyContacts.contactname" label="Emergency Contact Person"></v-text-field>
-									<v-text-field v-model="profileStore.myEmergencyContacts.relation" label="Contact Relation"></v-text-field>
-									<v-text-field v-model="profileStore.myEmergencyContacts.mobilenumber" label="Contact Number"></v-text-field>
+									<v-text-field v-model="profileStore.myEmergencyContacts.contactname"
+										label="Emergency Contact Person"></v-text-field>
+									<v-text-field v-model="profileStore.myEmergencyContacts.relation"
+										label="Contact Relation"></v-text-field>
+									<v-text-field v-model="profileStore.myEmergencyContacts.mobilenumber"
+										label="Contact Number"></v-text-field>
 								</v-card-text>
 								<v-card-actions>
 									<v-row>
@@ -151,7 +151,8 @@
 					</template>
 
 					<template v-slot:append>
-						<v-progress-circular color="primary" indeterminate="disable-shrink" size="16" width="2"></v-progress-circular>
+						<v-progress-circular color="primary" indeterminate="disable-shrink" size="16"
+							width="2"></v-progress-circular>
 					</template>
 				</v-list-item>
 			</v-list>
@@ -159,15 +160,11 @@
 
 		<!-- Start Unlink Dialog Box -->
 		<v-dialog v-model="unlinkDialogbox" width="auto">
-			<v-card
-				max-width="400"
-				prepend-icon="mdi-link-off"
-				color="blue-grey-darken-4"
-				text="Are you sure you want to unlink your card?"
-				title="Unlink Card"
-			>
+			<v-card max-width="400" prepend-icon="mdi-link-off" color="blue-grey-darken-4"
+				text="Are you sure you want to unlink your card?" title="Unlink Card">
 				<template v-slot:actions>
-					<v-btn variant="tonal" text="Unlink" prepend-icon="mdi-link-off" color="red" @click="unlinkCard"></v-btn>
+					<v-btn variant="tonal" text="Unlink" prepend-icon="mdi-link-off" color="red"
+						@click="unlinkCard"></v-btn>
 					<v-btn variant="tonal" text="Cancel" @click="unlinkDialogbox = false"></v-btn>
 				</template>
 			</v-card>
@@ -192,13 +189,8 @@
             Assign Card to {{ profileDetails.studentno }}
           </v-card-title> -->
 					<v-card-text>
-						<v-text-field
-							:rules="rules.cardid"
-							v-model="cardid"
-							label="Assign card"
-							prepend-inner-icon="mdi-card-account-details"
-							clearable
-						></v-text-field>
+						<v-text-field :rules="rules.cardid" v-model="cardid" label="Assign card"
+							prepend-inner-icon="mdi-card-account-details" clearable></v-text-field>
 					</v-card-text>
 					<v-card-actions>
 						<v-spacer></v-spacer>
@@ -218,21 +210,23 @@
 					<v-card-text>
 						<v-row>
 							<v-col cols="4" v-if="profileDetails">
-								<v-img
-									class="image_url mx-auto"
-									:src="formatCurImageUrl(profileDetails.image_url)"
-									alt=""
-									lazy-src="https://fakeimg.pl/400x400?text=Photo"
-								/>
+								<v-img class="image_url mx-auto"
+									:src="formatCurImageUrl(serverBackendBase, profileDetails.image_url)" alt=""
+									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
 							</v-col>
 							<v-col cols="4" v-else>
-								<v-img class="image_url mx-auto" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+								<v-img class="image_url mx-auto" alt=""
+									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
 							</v-col>
 							<v-col cols="8">
-								<v-text-field v-model="student_no" :rules="rules.studentno" label="Student No"></v-text-field>
-								<v-text-field v-model="last_name" :rules="rules.lastname" label="Last name"></v-text-field>
-								<v-text-field v-model="first_name" :rules="rules.firstname" label="First name"></v-text-field>
-								<v-text-field v-model="middle_name" :rules="rules.middlename" label="Middle name"></v-text-field>
+								<v-text-field v-model="student_no" :rules="rules.studentno"
+									label="Student No"></v-text-field>
+								<v-text-field v-model="last_name" :rules="rules.lastname"
+									label="Last name"></v-text-field>
+								<v-text-field v-model="first_name" :rules="rules.firstname"
+									label="First name"></v-text-field>
+								<v-text-field v-model="middle_name" :rules="rules.middlename"
+									label="Middle name"></v-text-field>
 							</v-col>
 						</v-row>
 						<div class="d-flex mb-3"></div>
@@ -263,37 +257,25 @@
 				</v-toolbar>
 				<v-divider></v-divider>
 				<v-card-text>
-					<v-img
-						:src="avatarImage ? imagePreviewURL : ''"
-						alt=""
-						lazy-src="https://fakeimg.pl/400x400?text=Photo"
-						style="max-width: 100%; object-fit: cover"
-						height="30vh"
-					/>
+					<v-img :src="avatarImage ? imagePreviewURL : ''" alt=""
+						lazy-src="https://fakeimg.pl/400x400?text=Photo" style="max-width: 100%; object-fit: cover"
+						height="30vh" />
 
-					<v-file-input
-						:rules="rules.photo"
-						v-model="avatarImage"
-						accept="image/png, image/jpeg, image/bmp"
-						density="compact"
-						prepend-icon="mdi-camera"
-						label="Upload Image"
-						ref="uploader"
-						required
-						class="d-none"
-						@change="onFileChange"
-						@click:clear="clearImagePreview()"
-					></v-file-input>
+					<v-file-input :rules="rules.photo" v-model="avatarImage" accept="image/png, image/jpeg, image/bmp"
+						density="compact" prepend-icon="mdi-camera" label="Upload Image" ref="uploader" required
+						class="d-none" @change="onFileChange" @click:clear="clearImagePreview()"></v-file-input>
 
 					<div class="d-flex align-center justify-center">
-						<v-btn color="primary" class="text-none mt-2" variant="tonal" :loading="isSelecting" @click="onButtonClick">
+						<v-btn color="primary" class="text-none mt-2" variant="tonal" :loading="isSelecting"
+							@click="onButtonClick">
 							<v-icon>mdi-image</v-icon>
 						</v-btn>
 					</div>
 				</v-card-text>
 
 				<v-card-actions class="justify-center">
-					<v-btn color="primary" class="text-none mt-2" block round variant="elevated" prepend-icon="mdi-cloud-upload" @click="uploadUpdatedImage">
+					<v-btn color="primary" class="text-none mt-2" block round variant="elevated"
+						prepend-icon="mdi-cloud-upload" @click="uploadUpdatedImage">
 						Upload
 					</v-btn>
 				</v-card-actions>
@@ -303,15 +285,11 @@
 
 		<!-- Start Delete Profile Dialog Box -->
 		<v-dialog v-model="deleteProfileDialog" width="auto">
-			<v-card
-				max-width="400"
-				prepend-icon="mdi-delete-alert"
-				color="blue-grey-darken-4"
-				text="Are you sure you want to delete this profile?"
-				title="Delete Profile"
-			>
+			<v-card max-width="400" prepend-icon="mdi-delete-alert" color="blue-grey-darken-4"
+				text="Are you sure you want to delete this profile?" title="Delete Profile">
 				<template v-slot:actions>
-					<v-btn variant="tonal" :loading="loading" text="Delete" @click="deleteProfile" prepend-icon="mdi-delete" color="red"></v-btn>
+					<v-btn variant="tonal" :loading="loading" text="Delete" @click="deleteProfile"
+						prepend-icon="mdi-delete" color="red"></v-btn>
 					<v-btn variant="tonal" text="Cancel" @click="deleteProfileDialog = false"></v-btn>
 				</template>
 			</v-card>
@@ -395,7 +373,7 @@ const contactPersonDetails = ref(false);
 const ctName = ref(null);
 const ctRelation = ref(null);
 const ctMobileNumber = ref(null);
-
+const serverBackendBase = ref("");
 const rules = ref({
 	studentno: [(v) => !!v || "Student no is required"],
 	lastname: [(v) => !!v || "Lastname is required"],
@@ -407,11 +385,13 @@ const rules = ref({
 
 async function initialize() {
 	try {
-		const result = await axios.post(`/api/profile/${route.params.id}`);		
+		const result = await axios.post(`/api/profile/${route.params.id}`);
 		if (result) {
 			// Construct Image URL
 			const myBase = await getImageServerUrl();
-			profileImage.value = formatCurImageUrl(result.data[0].image_url);
+			// Add the Backend URL to the const
+			serverBackendBase.value = myBase;
+			profileImage.value = formatCurImageUrl(myBase, result.data[0].image_url);
 			profileDetails.value = result.data[0];
 			cardDetails.value = result.data[0].card;
 			profileid.value = result.data[0].id;
@@ -424,7 +404,7 @@ async function initialize() {
 			publicID.value = result.data[0].publicid;
 		}
 		const myEmergencyContact = await profileStore.getEmergencyContactDetails(route.params.id);
-		if(myEmergencyContact){
+		if (myEmergencyContact) {
 
 		}
 	} catch (error) {

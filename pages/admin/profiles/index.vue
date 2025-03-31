@@ -24,26 +24,12 @@
 							<v-icon size="35" color="primary" v-else>mdi-smart-card</v-icon>
 						</template>
 						<template v-slot:[`item.actions`]="{ item }">
-							<!-- <v-tooltip text="Assign Card" location="top">
-								<template v-slot:activator="{ props }">
-									<v-icon v-bind="props" v-if="item.is_card_assign == false" class="me-2"
-										@click="showAssignCardDialog(item)">
-										mdi-credit-card-plus </v-icon>
-								</template>
-</v-tooltip> -->
 							<v-tooltip text="View Profile" location="top">
 								<template v-slot:activator="{ props }">
 									<v-btn v-bind="props" variant="text" icon="mdi-open-in-new"
 										:to="`profiles/${item.publicid}`"> </v-btn>
 								</template>
 							</v-tooltip>
-							<!-- <v-tooltip text="Edit Profile" location="top">
-								<template v-slot:activator="{ props }">
-									<v-icon v-bind="props" class="me-2" @click="editItem(item)"> mdi-pencil
-									</v-icon>
-								</template>
-							</v-tooltip> -->
-
 							<v-tooltip text="Delete Profile" location="top">
 								<template v-slot:activator="{ props }">
 									<v-icon v-bind="props" @click="showDeleteProfileDialog(item)"> mdi-delete </v-icon>
@@ -69,11 +55,9 @@
 							<v-btn color="primary" class="text-none mt-2" block round depressed :loading="isSelecting"
 								@click="onButtonClick">
 								<v-icon start> mdi-cloud-upload </v-icon>
-								<!-- {{ buttonText || defaultButtonText }} -->
+						
 							</v-btn>
-							<!-- <v-btn v-if="buttonText != 'Upload Image'" color="warning"
-											class="text-none mt-2" @click="clearImagePreview()" block round
-											depressed>Clear Image</v-btn> -->
+						
 
 							<v-file-input :rules="rules.photo" v-model="avatarImage"
 								accept="image/png, image/jpeg, image/bmp" density="compact" prepend-icon="mdi-camera"
@@ -102,8 +86,7 @@
 					</v-btn>
 					<v-btn variant="elevated" color="error" @click="cancelAddRecord"> Cancel </v-btn>
 					<v-spacer></v-spacer>
-					<!-- <v-btn class="mt-4" color="primary" variant="outlined" size="large"
-									@click.prevent="onSubmit">Submit</v-btn> -->
+					
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -138,14 +121,6 @@
 			</v-card>
 		</v-dialog>
 		<!-- End Delete Profile Dialog Box -->
-
-		<!-- SNACKBAR -->
-		<!-- <v-snackbar v-model="snackbar" color="success" location="top right">
-			Successfully submitted!
-			<template v-slot:actions>
-				<v-btn density="compact" icon="mdi-close" @click="snackbar = false"> </v-btn>
-			</template>
-		</v-snackbar> -->
 
 		<v-snackbar v-model="snackbar" :color="snackbar_color" location="top right">
 			<v-icon start>{{ snackbar_icon }}</v-icon>
@@ -243,8 +218,10 @@ async function initialize() {
 		//   Get the Profile history on load of the page
 		const { data: result } = await useFetch("/api/getProfileList");
 		if (result) {
+			console.log(result.value);
 			const resultList = await updateImageUrls(result.value);
 			if (resultList) {
+			console.log(resultList);
 				profileList.value = resultList;
 			}
 		}
@@ -356,7 +333,7 @@ async function onSubmit() {
 async function updateImageUrls(students) {
 	const myBase = await getImageServerUrl();
 	return students.map((student) => {
-		const updatedUrl = formatCurImageUrl(student.image_url); // Call your utility function
+		const updatedUrl = formatCurImageUrl(baseUrl,student.image_url); // Call your utility function
 		return {
 			...student,
 			image_url: updatedUrl, // Update the image_url with the result of formatCurImageUrl

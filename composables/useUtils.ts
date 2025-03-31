@@ -9,12 +9,12 @@ export const useUtils = () => {
     return myUrl.data
   }
 
-  const formatCurImageUrl = async (asset: string) => {
-    const myBaseUrl = await axios.get('/api/settings/connectBackend');
-    const combinedUrl = myBaseUrl.data+asset;
+  const formatCurImageUrl = (serverURI: string ,asset: string) => {
+    const combinedUrl = serverURI+asset;
     console.log(`Mapping Asset : ${combinedUrl}`);
     return combinedUrl;    
   };
+
 
   const uploadImage = async (file) => {
     const formData = new FormData();
