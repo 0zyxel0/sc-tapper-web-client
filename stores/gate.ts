@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useRouter } from 'nuxt/app'
 import axios from 'axios'
 // Composable utility function import
-const { getBackendUrl, formatCurImageUrl ,getImageServerUrl} = useUtils()
+const {getImageServerUrl} = useUtils()
 const router = useRouter()
 export const useGateStore = defineStore('gate', {
   state: () => ({

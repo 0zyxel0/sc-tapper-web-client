@@ -9,8 +9,9 @@ export const useUtils = () => {
     return myUrl.data
   }
 
-  const formatCurImageUrl = (serverURI: string ,asset: string) => {
-    const combinedUrl = serverURI+asset;
+  const formatCurImageUrl = async (asset: string) => {
+    const myBaseUrl = await axios.get('/api/settings/connectBackend');
+    const combinedUrl = myBaseUrl.data+asset;
     console.log(`Mapping Asset : ${combinedUrl}`);
     return combinedUrl;    
   };

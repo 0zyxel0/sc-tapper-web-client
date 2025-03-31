@@ -411,7 +411,7 @@ async function initialize() {
 		if (result) {
 			// Construct Image URL
 			const myBase = await getImageServerUrl();
-			profileImage.value = formatCurImageUrl(myBase, result.data[0].image_url);
+			profileImage.value = formatCurImageUrl(result.data[0].image_url);
 			profileDetails.value = result.data[0];
 			cardDetails.value = result.data[0].card;
 			profileid.value = result.data[0].id;

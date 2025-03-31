@@ -356,7 +356,7 @@ async function onSubmit() {
 async function updateImageUrls(students) {
 	const myBase = await getImageServerUrl();
 	return students.map((student) => {
-		const updatedUrl = formatCurImageUrl(myBase, student.image_url); // Call your utility function
+		const updatedUrl = formatCurImageUrl(student.image_url); // Call your utility function
 		return {
 			...student,
 			image_url: updatedUrl, // Update the image_url with the result of formatCurImageUrl
