@@ -211,7 +211,7 @@
 						<v-row>
 							<v-col cols="4" v-if="profileDetails">
 								<v-img class="image_url mx-auto"
-									:src="formatCurImageUrl(serverBackendBase, profileDetails.image_url)" alt=""
+									:src="profileImage" alt=""
 									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
 							</v-col>
 							<v-col cols="4" v-else>
