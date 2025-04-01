@@ -11,6 +11,8 @@ export const useUtils = () => {
 
   const formatCurImageUrl = (serverURI: string ,asset: string) => {
     const combinedUrl = serverURI+asset;
+    console.log(`Server : ${serverURI}`);
+    console.log(`Server : ${asset}`);
     console.log(`Mapping Asset : ${combinedUrl}`);
     return combinedUrl;    
   };
