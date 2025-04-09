@@ -42,7 +42,7 @@
 import { ref } from 'vue'
 import { useFetch } from '#app'
 import * as XLSX from 'xlsx'
-
+import axios from "axios";
 definePageMeta({
   layout: "admin",
 })
@@ -68,19 +68,11 @@ async function fetchReportData() {
   if (!selectedDate.value) return
 
   try {
-    const baseUrl = await getBackendUrl();		
-    const { data, error } = await useFetch(
-      `${baseUrl}/api/gate-history/generate-time-in-out-history`,
-      {
-        query: { date: selectedDate.value },
-      }
-    )
-
-    if (error.value) {
-      console.error("Failed to fetch report:", error.value)
-      reportData.value = []
-    } else {
-      reportData.value = data.value || []
+    const result = await axios.post('/api/reports/badgeHistory', { date: selectedDate.value }).catch(err => {
+      console.log(err);
+    });
+    if (result) {
+      reportData.value = result.data || []
     }
   } catch (err) {
     console.error("Error fetching report:", err)
