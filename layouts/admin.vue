@@ -1,112 +1,180 @@
 <template>
-  <v-app>
-    <v-navigation-drawer v-model="drawer" class="bg-deep-purple" color="primary" permanent>
-      <div>
-        <p class="nav-title">Tapper</p>
-        <v-list density="compact" nav>
-          <v-list-item v-for="(item, i) in items" :key="i" :value="item" :to="item.route" exact>
-            <template v-slot:prepend>
-              <v-icon :icon="item.icon"></v-icon>
-            </template>
-            <v-list-item-title>{{ item.text }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
+  <!-- 
+    Root container for the entire layout.
+    - `flex`: Establishes the main flex layout.
+    - `h-screen`: Takes up the full viewport height.
+    - `bg-gray-100`: A light background for the main content area.
+  -->
+  <div class="flex h-screen bg-gray-100">
+    <!-- 
+      Sidebar Navigation
+      Replaces <v-navigation-drawer>
+      - `transition-transform duration-300 ease-in-out`: For smooth slide-in/out animation.
+      - We use a conditional class binding to move the sidebar on/off screen.
+        - `translate-x-0`: Visible state.
+        - `-translate-x-full`: Hidden state (moved completely to the left).
+      - `w-64`: Fixed width.
+      - `bg-indigo-800 text-white`: Replicates `bg-deep-purple` and dark theme.
+      - `flex flex-col`: To structure the title, nav list, and any footer content.
+      - `z-30`: Ensures the sidebar is on top of other content if it ever needs to overlay.
+    -->
+    <aside
+      class="flex w-64 flex-col bg-indigo-800 text-white transition-transform duration-300 ease-in-out"
+      :class="drawer ? 'translate-x-0' : '-translate-x-full'"
+    >
+      <!-- Sidebar Header -->
+      <div class="py-4 text-center">
+        <p class="text-xl font-bold">Tapper</p>
       </div>
-    </v-navigation-drawer>
-    <v-app-bar prominent elevation="0">
-      <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>
-        Tapper - ID Management
-      </v-toolbar-title>
-      <div class="mr-2">
-        <v-menu min-width="200px" rounded>
-          <template v-slot:activator="{ props }">
-            <v-btn icon v-bind="props" variant="tonal">
-              <v-avatar color="deep-purple" size="large">
-                <v-icon icon="mdi-account-circle" color="white"></v-icon>
-              </v-avatar>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-text>
-              <div class="mx-auto text-center">
-                <v-avatar color="deep-purple">
-                  <v-icon icon="mdi-account-circle"></v-icon>
-                </v-avatar>
-                <h3 class="mt-2">{{ userInfo.username }}</h3>
-                <p class="text-caption mt-1">{{ userInfo.email }}</p>
-                
-                <v-divider class="my-3"></v-divider>
-                <v-btn
-                  prepend-icon="mdi-logout"
-                  variant="text"
-                  class="text-capitalize"
-                  rounded
-                  @click="logout()"
-                >
-                  Logout
-                </v-btn>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-menu>
+
+      <!-- Navigation Links -->
+      <nav class="flex-grow px-2">
+        <ul>
+          <li v-for="item in items" :key="item.text">
+            <!-- 
+              <NuxtLink> replaces <v-list-item>
+              - `flex items-center ...`: Creates the list item appearance.
+              - `gap-x-3`: Space between icon and text.
+              - `rounded-md`: Replicates the rounded look of list items.
+              - `hover:bg-indigo-700`: Hover effect.
+              - `exact-active-class`: Applies styles ONLY when the route is an exact match.
+            -->
+            <NuxtLink
+              :to="item.route"
+              class="flex items-center gap-x-3 rounded-md px-3 py-3 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white"
+              exact-active-class="bg-indigo-900 text-white"
+            >
+              <Icon :name="item.icon" class="h-6 w-6" />
+              <span>{{ item.text }}</span>
+            </NuxtLink>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area (Header + Page) -->
+    <div class="flex flex-1 flex-col">
+      <!-- 
+        Top Header Bar
+        Replaces <v-app-bar>
+      -->
+      <header class="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2 shadow-sm">
+        <!-- Left side: Hamburger Menu and Title -->
+        <div class="flex items-center gap-x-4">
+          <!-- 
+            Hamburger Icon to toggle the drawer
+            Replaces <v-app-bar-nav-icon>
+          -->
+          <button @click="drawer = !drawer" class="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800">
+            <Icon name="mdi:menu" class="h-6 w-6" />
+          </button>
+          <h1 class="text-lg font-semibold text-gray-800">Tapper - ID Management</h1>
         </div>
-    </v-app-bar>
 
-    <v-main>
-      <v-container>
+        <!-- Right side: User Menu -->
+        <!-- 
+          Replaces <v-menu>
+          This is a custom dropdown implementation.
+          - `relative`: The container must be relative for the absolute-positioned menu to work.
+        -->
+        <div class="relative" ref="menuContainer">
+          <!-- The button that activates the menu -->
+          <button @click="isMenuOpen = !isMenuOpen" class="flex items-center justify-center rounded-full h-10 w-10 bg-indigo-600 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <Icon name="mdi:account-circle" class="h-8 w-8" />
+          </button>
+
+          <!-- 
+            The Dropdown Panel
+            - `v-if="isMenuOpen"`: Renders the menu only when it's open.
+            - `absolute right-0 mt-2`: Positions the menu below the activator button.
+            - `w-64`: Sets a width.
+            - `origin-top-right`: Animation origin for a nice scale effect.
+            - `transition ...`: CSS classes for enter/leave animations.
+          -->
+          <transition
+            enter-active-class="transition ease-out duration-100"
+            enter-from-class="transform opacity-0 scale-95"
+            enter-to-class="transform opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-75"
+            leave-from-class="transform opacity-100 scale-100"
+            leave-to-class="transform opacity-0 scale-95"
+          >
+            <div
+              v-if="isMenuOpen"
+              class="absolute right-0 mt-2 w-64 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            >
+              <div class="p-4 text-center">
+                <Icon name="mdi:account-circle" class="mx-auto h-16 w-16 text-indigo-600" />
+                <h3 class="mt-2 text-lg font-semibold text-gray-900">{{ userInfo.username }}</h3>
+                <p class="mt-1 text-sm text-gray-500">{{ userInfo.email }}</p>
+                <hr class="my-3" />
+                <button
+                  @click="logout"
+                  class="flex w-full items-center justify-center gap-x-2 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <Icon name="mdi:logout" class="h-5 w-5" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </header>
+
+      <!-- 
+        Page Content
+        Replaces <v-main>
+        - `p-6` or `p-8` replaces <v-container>'s padding.
+        - `overflow-y-auto`: Makes only this area scrollable if content overflows.
+      -->
+      <main class="flex-1 overflow-y-auto p-6">
         <slot />
-      </v-container>
-    </v-main>
-
-  </v-app>
+      </main>
+    </div>
+  </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { storeToRefs } from "pinia";
 import { useMyAuthStore } from "~/stores/auth";
+import { onClickOutside } from '@vueuse/core';
+
+// --- State from original script ---
 const router = useRouter();
 const { logUserOut } = useMyAuthStore();
-const { authenticated } = storeToRefs(useMyAuthStore());
-const { userData } = storeToRefs(useMyAuthStore());
-
+const { authenticated, userData } = storeToRefs(useMyAuthStore());
 const userInfo = ref(userData?.value.user);
-const drawer = ref(true);
+
+// --- State for UI components ---
+const drawer = ref(true); // Controls the sidebar visibility
+const isMenuOpen = ref(false); // Controls the user dropdown menu visibility
+const menuContainer = ref(null); // A template ref for the menu container div
+
 const items = ref([
-  { text: "Dashboard", route: "/admin/", icon: "mdi-view-dashboard" },
-  { text: "Cards", route: "/admin/cards", icon: "mdi-credit-card" },
-  { text: "Profiles", route: "/admin/profiles", icon: "mdi-badge-account-outline" },
-  { text: "Reports", route: "/admin/reporting", icon: "mdi-badge-account-outline" },
-  { text: "Settings", route: "/admin/settings", icon: "mdi-cog-outline" },
+  { text: "Dashboard", route: "/admin/", icon: "mdi:view-dashboard" },
+  { text: "Cards", route: "/admin/cards", icon: "mdi:credit-card" },
+  { text: "Profiles", route: "/admin/profiles", icon: "mdi:badge-account-outline" },
+  { text: "Reports", route: "/admin/reporting", icon: "mdi:chart-bar" }, // Changed icon for variety
+  { text: "Settings", route: "/admin/settings", icon: "mdi:cog-outline" },
 ]);
 
+// --- Logic ---
 async function logout() {
+  isMenuOpen.value = false; // Close menu on logout
   logUserOut();
   router.push("/auth/signin");
 }
+
+// Use VueUse's onClickOutside to close the menu when clicking elsewhere on the page
+onClickOutside(menuContainer, () => {
+  isMenuOpen.value = false;
+});
 </script>
 
-<style scoped>
-.nav-title {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  padding: 10px 0;
-}
-
-.nav-footer-title {
-
-  font-size: 14px;
-  padding: 15px 0;
-}
-
-.v-list-item-title {
-  font-size: 17px;
-  padding: 10px 5px;
-}
-
-.logout-btn {
-  margin: 0 0 20px 0;
-  text-transform: capitalize;
-}
+<style>
+/* 
+  We remove the <style scoped> block as all styles are now handled by Tailwind utilities.
+  You could add global styles here if needed, for example, for the scrollbar.
+*/
 </style>

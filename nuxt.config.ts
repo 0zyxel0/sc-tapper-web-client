@@ -1,4 +1,3 @@
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   devtools: { enabled: false },
   pages: true,
@@ -11,29 +10,20 @@ export default defineNuxtConfig({
     }
   },
   build: {
-    transpile: ['vuetify', 'vue-toastification'],
+    transpile: ['vue-toastification'],
   },
   modules: [
-    (_options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', (config) => {
-        config.plugins.push(vuetify({ autoImport: true }))
-      })
-    },
     'nuxt-time',
     '@pinia/nuxt',
+    '@nuxtjs/tailwindcss',
   ],
-  vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
-    },
-  },
-
   typescript: {
     strict: false,
   },
-
+ css: [
+    '~/assets/css/tailwind.css', // Your main Tailwind CSS file
+    '@mdi/font/css/materialdesignicons.min.css', // Material Design Icons
+  ],
   runtimeConfig: {
     public: {
       apiToken: process.env.API_TOKEN,
