@@ -32,7 +32,7 @@
 						</div>
 						<!-- v-card v-else -->
 						<div v-else class="bg-gray-800 rounded-lg text-center">
-							<img class="w-[60vh] h-[60vh] object-cover rounded-md border-4 border-white mx-auto"
+							<img class="w-35vh h-35vh object-cover rounded-md border-4 border-white mx-auto"
 								:src="currentPhoto" alt="Profile Photo" />
 							<!-- v-card elevation="0" -->
 							<div class="bg-gray-800 mt-4">
@@ -296,7 +296,7 @@ onMounted(() => {
     width: 50vh;
   }
   .h-\[60vh\] {
-    height: 50vh;
+    height: 45vh;
   }
 
   /* .waiting-title equivalent */

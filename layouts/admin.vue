@@ -1,23 +1,5 @@
 <template>
-  <!-- 
-    Root container for the entire layout.
-    - `flex`: Establishes the main flex layout.
-    - `h-screen`: Takes up the full viewport height.
-    - `bg-gray-100`: A light background for the main content area.
-  -->
   <div class="flex h-screen bg-gray-100">
-    <!-- 
-      Sidebar Navigation
-      Replaces <v-navigation-drawer>
-      - `transition-transform duration-300 ease-in-out`: For smooth slide-in/out animation.
-      - We use a conditional class binding to move the sidebar on/off screen.
-        - `translate-x-0`: Visible state.
-        - `-translate-x-full`: Hidden state (moved completely to the left).
-      - `w-64`: Fixed width.
-      - `bg-indigo-800 text-white`: Replicates `bg-deep-purple` and dark theme.
-      - `flex flex-col`: To structure the title, nav list, and any footer content.
-      - `z-30`: Ensures the sidebar is on top of other content if it ever needs to overlay.
-    -->
     <aside
       class="flex w-64 flex-col bg-indigo-800 text-white transition-transform duration-300 ease-in-out"
       :class="drawer ? 'translate-x-0' : '-translate-x-full'"
@@ -31,14 +13,7 @@
       <nav class="flex-grow px-2">
         <ul>
           <li v-for="item in items" :key="item.text">
-            <!-- 
-              <NuxtLink> replaces <v-list-item>
-              - `flex items-center ...`: Creates the list item appearance.
-              - `gap-x-3`: Space between icon and text.
-              - `rounded-md`: Replicates the rounded look of list items.
-              - `hover:bg-indigo-700`: Hover effect.
-              - `exact-active-class`: Applies styles ONLY when the route is an exact match.
-            -->
+          
             <NuxtLink
               :to="item.route"
               class="flex items-center gap-x-3 rounded-md px-3 py-3 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white"
@@ -71,26 +46,14 @@
           <h1 class="text-lg font-semibold text-gray-800">Tapper - ID Management</h1>
         </div>
 
-        <!-- Right side: User Menu -->
-        <!-- 
-          Replaces <v-menu>
-          This is a custom dropdown implementation.
-          - `relative`: The container must be relative for the absolute-positioned menu to work.
-        -->
+       
         <div class="relative" ref="menuContainer">
           <!-- The button that activates the menu -->
           <button @click="isMenuOpen = !isMenuOpen" class="flex items-center justify-center rounded-full h-10 w-10 bg-indigo-600 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             <Icon name="mdi:account-circle" class="h-8 w-8" />
           </button>
 
-          <!-- 
-            The Dropdown Panel
-            - `v-if="isMenuOpen"`: Renders the menu only when it's open.
-            - `absolute right-0 mt-2`: Positions the menu below the activator button.
-            - `w-64`: Sets a width.
-            - `origin-top-right`: Animation origin for a nice scale effect.
-            - `transition ...`: CSS classes for enter/leave animations.
-          -->
+        
           <transition
             enter-active-class="transition ease-out duration-100"
             enter-from-class="transform opacity-0 scale-95"
@@ -121,12 +84,7 @@
         </div>
       </header>
 
-      <!-- 
-        Page Content
-        Replaces <v-main>
-        - `p-6` or `p-8` replaces <v-container>'s padding.
-        - `overflow-y-auto`: Makes only this area scrollable if content overflows.
-      -->
+     
       <main class="flex-1 overflow-y-auto p-6">
         <slot />
       </main>
@@ -163,7 +121,7 @@ const items = ref([
 async function logout() {
   isMenuOpen.value = false; // Close menu on logout
   logUserOut();
-  router.push("/auth/signin");
+  router.push("/auth/login");
 }
 
 // Use VueUse's onClickOutside to close the menu when clicking elsewhere on the page

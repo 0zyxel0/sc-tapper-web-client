@@ -11,6 +11,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.5.4",
+    "@vueuse/core": "^13.6.0",
     "add": "^2.0.6",
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
