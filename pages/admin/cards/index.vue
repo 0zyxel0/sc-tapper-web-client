@@ -83,72 +83,62 @@
 
     <!-- Edit Modal -->
     <transition name="fade-modal">
-      <!-- Removed @click.self="closeModal" from this div to prevent outside clicks from closing -->
-      <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden">
+      <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeModal">
+        <div class="relative bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
           <!-- Modal Header -->
-          <div class="bg-indigo-600 text-white p-4 flex justify-between items-center">
-            <h3 class="text-xl font-bold">Edit Card Details</h3>
-            <button @click="closeModal" class="text-white/70 hover:text-white focus:outline-none">
-              <i class="mdi mdi-close text-2xl"></i>
+          <div class="flex justify-between items-center pb-3 border-b border-gray-200 mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Edit Card</h3>
+            <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+              <i class="mdi mdi-close text-xl"></i>
             </button>
           </div>
 
           <!-- Modal Body (Form) -->
-          <form @submit.prevent="saveChanges" class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-              <!-- Card ID (Read-only) -->
-              <div>
-                <label for="cardId" class="block text-sm font-medium text-gray-700 mb-1">Card ID</label>
-                <input type="text" id="cardId" v-model="editedItem.cardid" readonly
-                  class="block w-full rounded-lg border-gray-200 bg-gray-50 text-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm cursor-not-allowed">
-              </div>
-
-              <!-- Profile Public ID -->
-              <div>
-                <label for="profilePublicId" class="block text-sm font-medium text-gray-700 mb-1">Profile Public ID</label>
-                <input type="text" id="profilePublicId" v-model="editedItem.profile_publicid"
-                  class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-              </div>
-
-              <!-- Profile ID -->
-              <div>
-                <label for="profileId" class="block text-sm font-medium text-gray-700 mb-1">Profile ID</label>
-                <input type="number" id="profileId" v-model.number="editedItem.profileid"
-                  class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-              </div>
-
-              <!-- Is Active Checkbox -->
-              <div class="flex items-center mt-6">
-                <input type="checkbox" id="isActive" v-model="editedItem.is_active"
-                  class="h-5 w-5 rounded-md border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                <label for="isActive" class="ml-2 block text-sm text-gray-900">Is Active</label>
-              </div>
-
-              <!-- Read-only fields (occupy full width on small screens, half on md+) -->
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Document ID</label>
-                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded-lg border border-gray-200">{{ editedItem.documentId }}</p>
-              </div>
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Created At</label>
-                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded-lg border border-gray-200">{{ new Date(editedItem.createdAt).toLocaleString() }}</p>
-              </div>
-              <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Updated At</label>
-                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded-lg border border-gray-200">{{ new Date(editedItem.updatedAt).toLocaleString() }}</p>
-              </div>
-              <!-- Add other read-only fields here if needed (e.g., publishedAt, locale) -->
+          <form @submit.prevent="saveChanges">
+            <div class="mb-4">
+              <label for="cardId" class="block text-sm font-medium text-gray-700">Card ID</label>
+              <input type="text" id="cardId" v-model="editedItem.cardid" readonly
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-gray-100 cursor-not-allowed">
             </div>
+            <div class="mb-4">
+              <label for="profilePublicId" class="block text-sm font-medium text-gray-700">Profile Public ID</label>
+              <input type="text" id="profilePublicId" v-model="editedItem.profile_publicid"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            <div class="mb-4">
+              <label for="profileId" class="block text-sm font-medium text-gray-700">Profile ID</label>
+              <input type="number" id="profileId" v-model.number="editedItem.profileid"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            <div class="mb-4 flex items-center">
+              <input type="checkbox" id="isActive" v-model="editedItem.is_active"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+              <label for="isActive" class="ml-2 block text-sm text-gray-900">Is Active</label>
+            </div>
+            <!-- Display other read-only fields if desired -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700">Document ID</label>
+              <p class="mt-1 text-sm text-gray-900">{{ editedItem.documentId }}</p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700">Created At</label>
+              <p class="mt-1 text-sm text-gray-900">{{ new Date(editedItem.createdAt).toLocaleString() }}</p>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700">Updated At</label>
+              <p class="mt-1 text-sm text-gray-900">{{ new Date(editedItem.updatedAt).toLocaleString() }}</p>
+            </div>
+            <!-- Add other fields (publishedAt, locale) as read-only if you want them visible -->
+
 
             <!-- Modal Footer (Buttons) -->
-            <div class="flex justify-end gap-x-3 pt-6 mt-6 border-t border-gray-200 bg-gray-50 -mx-6 -mb-6 px-6 py-4">
+            <div class="flex justify-end gap-x-3 pt-4 border-t border-gray-200">
               <button type="button" @click="closeModal"
-                class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100">
+                class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                 Cancel
               </button>
               <button type="submit"
-                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Save Changes
               </button>
             </div>
@@ -198,6 +188,7 @@ const filteredList = computed(() => {
 // --- METHODS ---
 async function initialize() {
 	try {
+		// Replace with your actual API endpoint for cards
 		const { data: card_list } = await useFetch(`/api/getCardList`);
 		if (card_list.value) {
 			profileList.value = card_list.value;
@@ -209,44 +200,48 @@ async function initialize() {
 }
 
 function editItem(item) {
-	editedItem.value = { ...item }; // Create a deep copy
+	// Create a deep copy of the item to prevent direct mutation
+	// This is important so changes in the modal don't affect the table
+	// until you explicitly save them.
+	editedItem.value = { ...item };
 	isModalOpen.value = true;
 }
 
 async function saveChanges() {
+  // This is where you would send the updated data to your backend API
   console.log("Saving changes for:", editedItem.value);
 
   try {
-    // --- IMPORTANT: Replace this with your actual API call to update the card ---
-    // Example using $fetch (requires Nuxt 3's built-in fetch composable)
-    // const response = await $fetch(`/api/cards/${editedItem.value.id}`, { // Adjust endpoint as needed
-    //   method: 'PUT', // Or 'PATCH' depending on your API
-    //   body: editedItem.value,
+    // Example API call (you'll need to adjust this to your actual API)
+    // Assuming you have an endpoint like /api/cards/:id for PUT requests
+    // And assuming you have a way to get your backend URL, e.g., useUtils().getBackendUrl()
+    // const backendUrl = await useUtils().getBackendUrl(); // If you have a useUtils
+    // const response = await $fetch(`${backendUrl}/api/cards/${editedItem.value.id}`, {
+    //   method: 'PUT',
+    //   body: editedItem.value, // Send the entire editedItem object
     // });
-    // console.log("API response:", response);
 
-    // Simulate update in local list for demonstration
+    // For demonstration, let's simulate an update in the local list
     const index = profileList.value.findIndex(item => item.id === editedItem.value.id);
     if (index !== -1) {
-      // Ensure reactivity by replacing the object, not just mutating properties
-      profileList.value[index] = { ...editedItem.value };
+      profileList.value[index] = { ...editedItem.value }; // Update the original item in the list
     }
 
     console.log("Changes saved successfully (simulated).");
     // Optionally re-fetch data to ensure consistency with backend
-    // await initialize(); // Uncomment if you want to re-fetch all data after save
+    // await initialize();
 
     closeModal(); // Close the modal after successful save
-    // TODO: Show a success notification (e.g., toast/snackbar)
+    // Show a success snackbar/toast
   } catch (error) {
     console.error("Failed to save changes:", error);
-    // TODO: Show an error notification
+    // Show an error snackbar/toast
   }
 }
 
 function deleteItem(item){
 	console.log("Deleting:", item);
-	// TODO: Implement actual delete logic (e.g., confirmation dialog, API call)
+	// Implement actual delete logic (e.g., confirmation dialog, API call)
 }
 
 function closeModal() {

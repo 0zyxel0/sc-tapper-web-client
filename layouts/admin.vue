@@ -13,13 +13,14 @@
       <nav class="flex-grow px-2">
         <ul>
           <li v-for="item in items" :key="item.text">
-          
             <NuxtLink
               :to="item.route"
               class="flex items-center gap-x-3 rounded-md px-3 py-3 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white"
               exact-active-class="bg-indigo-900 text-white"
             >
-              <Icon :name="item.icon" class="h-6 w-6" />
+              <!-- Replaced Icon component with <i> tag -->
+              <!-- Dynamically constructs MDI class from item.icon string -->
+              <i :class="['text-xl', 'mdi', item.icon.replace('mdi:', '')]"></i>
               <span>{{ item.text }}</span>
             </NuxtLink>
           </li>
@@ -41,19 +42,21 @@
             Replaces <v-app-bar-nav-icon>
           -->
           <button @click="drawer = !drawer" class="rounded-md p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800">
-            <Icon name="mdi:menu" class="h-6 w-6" />
+            <!-- Replaced Icon component with <i> tag -->
+            <i class="mdi mdi-menu text-2xl"></i>
           </button>
           <h1 class="text-lg font-semibold text-gray-800">Tapper - ID Management</h1>
         </div>
 
-       
+        <!-- User Dropdown Menu Trigger -->
         <div class="relative" ref="menuContainer">
           <!-- The button that activates the menu -->
           <button @click="isMenuOpen = !isMenuOpen" class="flex items-center justify-center rounded-full h-10 w-10 bg-indigo-600 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            <Icon name="mdi:account-circle" class="h-8 w-8" />
+            <!-- Replaced Icon component with <i> tag -->
+            <i class="mdi mdi-account-circle text-3xl"></i>
           </button>
 
-        
+          <!-- User Dropdown Menu Content -->
           <transition
             enter-active-class="transition ease-out duration-100"
             enter-from-class="transform opacity-0 scale-95"
@@ -67,7 +70,8 @@
               class="absolute right-0 mt-2 w-64 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
             >
               <div class="p-4 text-center">
-                <Icon name="mdi:account-circle" class="mx-auto h-16 w-16 text-indigo-600" />
+                <!-- Replaced Icon component with <i> tag -->
+                <i class="mdi mdi-account-circle mx-auto text-6xl text-indigo-600"></i>
                 <h3 class="mt-2 text-lg font-semibold text-gray-900">{{ userInfo.username }}</h3>
                 <p class="mt-1 text-sm text-gray-500">{{ userInfo.email }}</p>
                 <hr class="my-3" />
@@ -75,7 +79,8 @@
                   @click="logout"
                   class="flex w-full items-center justify-center gap-x-2 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
-                  <Icon name="mdi:logout" class="h-5 w-5" />
+                  <!-- Replaced Icon component with <i> tag -->
+                  <i class="mdi mdi-logout text-xl"></i>
                   <span>Logout</span>
                 </button>
               </div>
@@ -84,7 +89,7 @@
         </div>
       </header>
 
-     
+      <!-- Main Content Slot -->
       <main class="flex-1 overflow-y-auto p-6">
         <slot />
       </main>
@@ -102,7 +107,9 @@ import { onClickOutside } from '@vueuse/core';
 const router = useRouter();
 const { logUserOut } = useMyAuthStore();
 const { authenticated, userData } = storeToRefs(useMyAuthStore());
-const userInfo = ref(userData?.value.user);
+// Ensure userInfo is reactive and defaults to an object if userData.value is null/undefined
+const userInfo = computed(() => userData.value?.user || { username: 'Guest', email: 'N/A' });
+
 
 // --- State for UI components ---
 const drawer = ref(true); // Controls the sidebar visibility
@@ -110,10 +117,11 @@ const isMenuOpen = ref(false); // Controls the user dropdown menu visibility
 const menuContainer = ref(null); // A template ref for the menu container div
 
 const items = ref([
+  // Updated icon names to be just the MDI suffix
   { text: "Dashboard", route: "/admin/", icon: "mdi:view-dashboard" },
   { text: "Cards", route: "/admin/cards", icon: "mdi:credit-card" },
   { text: "Profiles", route: "/admin/profiles", icon: "mdi:badge-account-outline" },
-  { text: "Reports", route: "/admin/reporting", icon: "mdi:chart-bar" }, // Changed icon for variety
+  { text: "Reports", route: "/admin/reporting", icon: "mdi:chart-bar" },
   { text: "Settings", route: "/admin/settings", icon: "mdi:cog-outline" },
 ]);
 
@@ -132,7 +140,7 @@ onClickOutside(menuContainer, () => {
 
 <style>
 /* 
-  We remove the <style scoped> block as all styles are now handled by Tailwind utilities.
-  You could add global styles here if needed, for example, for the scrollbar.
+  No specific styles needed here, as all styling is handled by Tailwind utility classes
+  and the MDI font CDN.
 */
 </style>
