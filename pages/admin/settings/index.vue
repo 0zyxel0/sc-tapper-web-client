@@ -122,11 +122,8 @@ const handleFileUpload = async () => {
       const fileContent = e.target?.result as string;
       const parsedJson = JSON.parse(fileContent);
 
-      // --- IMPORTANT: Replace this with your actual API endpoint for uploading ---
-      // Example using Nuxt's useFetch. Adjust URL and body structure as per your backend API.
-      // You might need to import useUtils if you have getBackendUrl()
-      // const backendUrl = await useUtils().getBackendUrl();
-      const uploadUrl = '/api/settings/upload-config'; // Example: Your Nuxt API route or direct backend URL
+      // --- UPDATED: API endpoint for uploading RFID cards ---
+      const uploadUrl = '/api/card/add-rfid-cards';
 
       const { error } = await useFetch(uploadUrl, {
         method: 'POST',
@@ -134,10 +131,11 @@ const handleFileUpload = async () => {
           'Content-Type': 'application/json',
           // Add any authentication headers if needed, e.g., 'Authorization': `Bearer ${yourAuthToken}`
         },
-        body: parsedJson, // Send the parsed JSON object
+        body: parsedJson, // Send the parsed JSON object directly, as it matches the expected structure
       });
 
       if (error.value) {
+        // More descriptive error message from backend if available
         uploadError.value = error.value.data?.message || 'Failed to upload file to backend.';
         uploadStatus.value = 'error';
       } else {
@@ -160,6 +158,7 @@ const handleFileUpload = async () => {
     uploading.value = false;
   };
 
+  // Read the file content as text
   reader.readAsText(selectedFile.value);
 };
 </script>
