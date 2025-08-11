@@ -1,135 +1,221 @@
 <template>
-	<div>
-		<v-row>
-			<v-col>
-				<v-btn class="mb-3" color="primary" @click="dialog = true">Add Record</v-btn>
-				<v-card elevation="0">
-					<v-card-title class="d-flex align-center pe-2">
-						<v-icon icon="mdi-account"></v-icon> &nbsp; Profiles
+	<div class="p-4">
+		<div class="flex flex-col">
+			<div class="w-full">
+				<button @click="dialog = true"
+					class="mb-4 px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors normal-case font-semibold">
+					Add Record
+				</button>
 
-						<v-spacer></v-spacer>
+				<div class="bg-white rounded-lg shadow-sm">
+					<div class="flex items-center justify-between p-4 border-b border-gray-200">
+						<div class="flex items-center">
+							<i class="mdi mdi-account text-2xl mr-2"></i>
+							<h2 class="text-xl font-semibold">Profiles</h2>
+						</div>
 
-						<v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
-							variant="solo-filled" flat hide-details single-line></v-text-field>
-					</v-card-title>
+						<div class="relative w-64">
+							<input type="text" v-model="search" placeholder="Search"
+								class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" />
+							<i class="mdi mdi-magnify absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+						</div>
+					</div>
 
-					<v-divider></v-divider>
-					<v-data-table v-model:search="search" :items="profileList" :headers="headers">
-						<template v-slot:[`item.image_url`]="{ item }">
-							<v-avatar :image="item.image_url" size="45" tile></v-avatar>
-						</template>
-						<template v-slot:[`item.is_card_assign`]="{ item }">
-							<v-icon size="35" color="grey"
-								v-if="item.is_card_assign == false">mdi-smart-card-off</v-icon>
-							<v-icon size="35" color="primary" v-else>mdi-smart-card</v-icon>
-						</template>
-						<template v-slot:[`item.actions`]="{ item }">
-							<v-tooltip text="View Profile" location="top">
-								<template v-slot:activator="{ props }">
-									<v-btn v-bind="props" variant="text" icon="mdi-open-in-new"
-										:to="`profiles/${item.publicid}`"> </v-btn>
-								</template>
-							</v-tooltip>
-							<v-tooltip text="Delete Profile" location="top">
-								<template v-slot:activator="{ props }">
-									<v-icon v-bind="props" @click="showDeleteProfileDialog(item)"> mdi-delete </v-icon>
-								</template>
-							</v-tooltip>
-						</template>
-					</v-data-table>
-				</v-card>
-			</v-col>
-		</v-row>
+					<hr class="border-t border-gray-200" />
 
-		<!-- DIALOG BOX -->
-		<v-dialog width="auto" v-model="dialog" persistent>
-			<v-card title="Add Record" width="800">
-				<v-divider></v-divider>
-				<v-card-text>
-					<v-row>
-						<v-col cols="4">
-							<v-img :src="avatarImage ? imagePreviewURL : ''" alt=""
-								lazy-src="https://fakeimg.pl/400x400?text=Photo"
-								style="max-width: 100%; object-fit: cover" height="30vh" />
+					<!-- Custom Data Table -->
+					<div class="overflow-x-auto">
+						<table class="min-w-full bg-white border-collapse">
+							<thead>
+								<tr>
+									<th v-for="header in headers" :key="header.key"
+										:class="['px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider', { 'text-right': header.align === 'end' }]">
+										{{ header.title }}
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="item in filteredProfileList" :key="item.publicid"
+									class="border-b border-gray-200 hover:bg-gray-50">
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+										{{ item.studentno }}
+									</td>
+									<td class="px-6 py-4 whitespace-nowrap">
+										<img :src="item.image_url" alt="Profile Photo"
+											class="w-11 h-11 rounded-full object-cover border border-gray-200" />
+									</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+										{{ item.last_name }}
+									</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+										{{ item.first_name }}
+									</td>
+									<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+										{{ item.middle_name }}
+									</td>
+									<td class="px-6 py-4 whitespace-nowrap">
+										<i v-if="item.is_card_assign === false"
+											class="mdi mdi-smart-card-off text-gray-400 text-3xl"></i>
+										<i v-else class="mdi mdi-smart-card text-purple-600 text-3xl"></i>
+									</td>
+									<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+										<NuxtLink :to="`profiles/${item.publicid}`"
+											class="text-purple-600 hover:text-purple-900 mr-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
+											<i class="mdi mdi-open-in-new text-xl"></i>
+										</NuxtLink>
+										<button @click="showDeleteProfileDialog(item)"
+											class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-gray-100 transition-colors">
+											<i class="mdi mdi-delete text-xl"></i>
+										</button>
+									</td>
+								</tr>
+								<tr v-if="filteredProfileList.length === 0">
+									<td :colspan="headers.length" class="px-6 py-4 text-center text-gray-500">
+										No records found.
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 
-							<v-btn color="primary" class="text-none mt-2" block round depressed :loading="isSelecting"
-								@click="onButtonClick">
-								<v-icon start> mdi-cloud-upload </v-icon>
-						
-							</v-btn>
-						
+		<!-- DIALOG BOX (Add Record) -->
+		<div v-if="dialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-white rounded-lg shadow-xl max-w-3xl w-full">
+				<div class="p-4 border-b border-gray-200">
+					<h3 class="text-lg font-semibold text-gray-800">Add Record</h3>
+				</div>
+				<hr class="my-4 border-t border-gray-200" />
+				<div class="p-6">
+					<div class="flex flex-col md:flex-row gap-6">
+						<!-- Image Upload Column -->
+						<div class="w-full md:w-1/3 flex flex-col items-center">
+							<img :src="avatarImage ? imagePreviewURL : 'https://fakeimg.pl/400x400?text=Photo'"
+								alt="Profile Photo"
+								class="w-full h-40 object-cover rounded-md border border-gray-200" />
 
-							<v-file-input :rules="rules.photo" v-model="avatarImage"
-								accept="image/png, image/jpeg, image/bmp" density="compact" prepend-icon="mdi-camera"
-								label="Upload Image" ref="uploader" required class="d-none" @change="onFileChange"
-								@click:clear="clearImagePreview()"></v-file-input>
-						</v-col>
-						<v-col cols="8">
-							<v-form v-model="valid" ref="loginForm" lazy-validation>
-								<v-text-field v-model="student_no" :rules="rules.studentno"
-									label="Student No"></v-text-field>
-								<v-text-field v-model="last_name" :rules="rules.lastname"
-									label="Last name"></v-text-field>
-								<v-text-field v-model="first_name" :rules="rules.firstname"
-									label="First name"></v-text-field>
-								<v-text-field v-model="middle_name" :rules="rules.middlename"
-									label="Middle name"></v-text-field>
-							</v-form>
-						</v-col>
-					</v-row>
-					<div class="d-flex mb-3"></div>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer></v-spacer>
-					<v-btn variant="elevated" :disabled="loading" :loading="loading" color="success" @click="onSubmit">
+							<!-- Custom file input button -->
+							<button type="button" @click="onButtonClick" :disabled="isSelecting"
+								class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-md flex items-center justify-center w-full hover:bg-purple-700 transition-colors normal-case"
+								:class="{ 'opacity-50 cursor-not-allowed': isSelecting }">
+								<i class="mdi mdi-cloud-upload mr-2"></i>
+								{{ buttonText }}
+							</button>
+							<!-- Hidden file input -->
+							<input type="file" ref="uploader" @change="onFileChange"
+								accept="image/png, image/jpeg, image/bmp" class="hidden" />
+						</div>
+
+						<!-- Text Fields Column -->
+						<div class="w-full md:w-2/3 grid grid-cols-1 gap-4">
+							<form ref="loginForm" class="grid grid-cols-1 gap-4">
+								<div class="relative">
+									<label for="studentNoAdd" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Student No</label>
+									<input id="studentNoAdd" type="text" v-model="student_no"
+										class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+								</div>
+								<div class="relative">
+									<label for="lastNameAdd" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Last name</label>
+									<input id="lastNameAdd" type="text" v-model="last_name"
+										class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+								</div>
+								<div class="relative">
+									<label for="firstNameAdd" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">First name</label>
+									<input id="firstNameAdd" type="text" v-model="first_name"
+										class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+								</div>
+								<div class="relative">
+									<label for="middleNameAdd" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Middle name</label>
+									<input id="middleNameAdd" type="text" v-model="middle_name"
+										class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+					<button type="button" @click="onSubmit" :disabled="loading"
+						class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors normal-case"
+						:class="{ 'opacity-50 cursor-not-allowed': loading }">
+						<span v-if="loading" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
 						Submit
-					</v-btn>
-					<v-btn variant="elevated" color="error" @click="cancelAddRecord"> Cancel </v-btn>
-					<v-spacer></v-spacer>
-					
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</button>
+					<button type="button" @click="cancelAddRecord"
+						class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors normal-case">
+						Cancel
+					</button>
+				</div>
+			</div>
+		</div>
 
 		<!-- ASSIGN CARD DIALOG -->
-		<v-dialog v-model="assignCardDialog" persistent max-width="500">
-			<v-card>
-				<v-form v-model="cardvalid" ref="assignCardForm" lazy-validation>
-					<v-card-title> Assign Card to {{ studentno }} </v-card-title>
-					<v-card-text>
-						<v-text-field :rules="rules.cardid" v-model="cardid" label="Assign card"
-							prepend-inner-icon="mdi-card-account-details" clearable></v-text-field>
-					</v-card-text>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn color="primary" variant="elevated" @click="assignCard()">Assign</v-btn>
-						<v-btn variant="elevated" @click="assignCardDialog = false">Close</v-btn>
-					</v-card-actions>
-				</v-form>
-			</v-card>
-		</v-dialog>
+		<div v-if="assignCardDialog"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
+				<form @submit.prevent="assignCard" ref="assignCardForm" class="p-6">
+					<h3 class="text-xl font-semibold text-gray-800 mb-4">Assign Card to {{ studentno }}</h3>
+					<div class="relative mb-6">
+						<label for="assignCardId" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Assign card</label>
+						<div class="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-purple-500">
+							<i class="mdi mdi-card-account-details text-gray-500 ml-3"></i>
+							<input id="assignCardId" type="text" v-model="cardid"
+								class="flex-grow p-2 rounded-r-md focus:outline-none" />
+							<button v-if="cardid" @click="cardid = null" type="button" class="text-gray-500 p-2 hover:text-gray-700">
+								<i class="mdi mdi-close-circle"></i>
+							</button>
+						</div>
+					</div>
+					<div class="flex justify-end gap-3">
+						<button type="submit"
+							class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors normal-case">
+							Assign
+						</button>
+						<button type="button" @click="assignCardDialog = false"
+							class="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors normal-case">
+							Close
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
 
-		<!-- Start Delete Profile Dialog Box -->
-		<v-dialog v-model="deleteProfileDialog" width="auto">
-			<v-card max-width="400" prepend-icon="mdi-delete-alert" color="blue-grey-darken-4"
-				text="Are you sure you want to delete this profile?" title="Delete Profile">
-				<template v-slot:actions>
-					<v-btn variant="tonal" :loading="loading" text="Delete" @click="deleteItem"
-						prepend-icon="mdi-delete" color="red"></v-btn>
-					<v-btn variant="tonal" text="Cancel" @click="deleteProfileDialog = false"></v-btn>
-				</template>
-			</v-card>
-		</v-dialog>
-		<!-- End Delete Profile Dialog Box -->
+		<!-- Delete Profile Dialog Box -->
+		<div v-if="deleteProfileDialog"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+				<div class="flex items-center mb-4">
+					<i class="mdi mdi-delete-alert text-2xl mr-3"></i>
+					<h3 class="text-xl font-semibold">Delete Profile</h3>
+				</div>
+				<p class="text-gray-200 mb-6">Are you sure you want to delete this profile?</p>
+				<div class="flex justify-end gap-3">
+					<button @click="deleteItem" :disabled="loading"
+						class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center hover:bg-red-700 transition-colors normal-case"
+						:class="{ 'opacity-50 cursor-not-allowed': loading }">
+						<i class="mdi mdi-delete mr-2"></i> Delete
+					</button>
+					<button @click="deleteProfileDialog = false"
+						class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors normal-case">
+						Cancel
+					</button>
+				</div>
+			</div>
+		</div>
 
-		<v-snackbar v-model="snackbar" :color="snackbar_color" location="top right">
-			<v-icon start>{{ snackbar_icon }}</v-icon>
-			{{ snackbar_msg }}
-
-			<template v-slot:actions>
-				<v-btn icon="mdi-close" size="x-small" @click="snackbar = false"> </v-btn>
-			</template>
-		</v-snackbar>
+		<!-- START SNACKBAR -->
+		<transition name="fade">
+			<div v-if="snackbar"
+				:class="['fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg text-white flex items-center', { 'bg-green-500': snackbar_color === 'success', 'bg-red-500': snackbar_color === 'error' }]">
+				<i :class="['mdi mr-2', snackbar_icon]"></i>
+				<span>{{ snackbar_msg }}</span>
+				<button @click="snackbar = false" class="ml-auto text-white opacity-75 hover:opacity-100">
+					<i class="mdi mdi-close text-sm"></i>
+				</button>
+			</div>
+		</transition>
+		<!-- END SNACKBAR -->
 	</div>
 </template>
 <script setup>
@@ -139,9 +225,8 @@ definePageMeta({
 import { v4 as uuidv4 } from "uuid";
 import { useToast } from "vue-toastification";
 import axios from "axios";
-import FormData from "form-data";
-import fs from "fs";
-import path from 'path-browserify';
+import FormData from "form-data"; // Keep this if your backend expects FormData
+// Removed fs and path-browserify as they are Node.js specific and not typically used in browser code
 
 // Composable utility function import
 const { getBackendUrl, formatCurImageUrl, uploadImage, getImageServerUrl } = useUtils();
@@ -161,22 +246,17 @@ const last_name = ref(null);
 const first_name = ref(null);
 const middle_name = ref(null);
 const search = ref(null);
-const dialog = ref(false);
+const dialog = ref(false); // For Add Record dialog
 const assignCardDialog = ref(false);
 const deleteProfileDialog = ref(false);
-const imageFile = ref(null);
-const previewImage = ref(null);
-const showUploader = ref(true);
+// const imageFile = ref(null); // Redundant with avatarImage
+// const previewImage = ref(null); // Redundant with imagePreviewURL
+// const showUploader = ref(true); // Vuetify specific, not needed
 const baseUrl = config.public.apiBase;
-const imageBase = config.public.imageBase;
-const form = ref([]);
+const imageBase = config.public.imageBase; // Not directly used in template, but kept for context
+// const form = ref([]); // Unused
 const headers = ref([
-	{
-		title: "Student #",
-		align: "start",
-		sortable: true,
-		key: "studentno",
-	},
+	{ title: "Student #", align: "start", sortable: true, key: "studentno" },
 	{ title: "Photo", key: "image_url", sortable: false },
 	{ title: "Lastname", key: "last_name", sortable: false },
 	{ title: "Firstname", key: "first_name", sortable: false },
@@ -184,7 +264,7 @@ const headers = ref([
 	{ title: "Card", key: "is_card_assign", sortable: false },
 	{ title: "Actions", key: "actions", sortable: false },
 ]);
-const rules = ref({
+const rules = ref({ // Vuetify specific rules, kept for context but manual validation used
 	studentno: [(v) => !!v || "Student no is required"],
 	lastname: [(v) => !!v || "Lastname is required"],
 	firstname: [(v) => !!v || "Firstname is required"],
@@ -194,149 +274,154 @@ const rules = ref({
 });
 
 const profileList = ref([]);
-const uploadResult = ref(null);
-const newImageName = ref(null);
-const publicID = ref("");
-const imageID = ref(null);
-const loginForm = ref(null);
-const assignCardForm = ref(null);
-const uploader = ref(null);
-const valid = ref(true);
-const cardvalid = ref(true);
-const imagePreviewURL = ref(null);
-const avatarImage = ref(null);
-const defaultButtonText = ref("Upload Image");
-const selectedFile = ref(null);
-const isSelecting = ref(false);
+// const uploadResult = ref(null); // Not directly used in this component after uploadImage call
+const newImageName = ref(null); // The File object with a new UUID name
+const publicID = ref(""); // The UUID string for the image
+const imageID = ref(null); // ID returned from image upload service
+const loginForm = ref(null); // Ref for the Add Record form
+const assignCardForm = ref(null); // Ref for the Assign Card form
+const uploader = ref(null); // Ref for the hidden file input
+// const valid = ref(true); // Vuetify form validation state, not automatically updated
+// const cardvalid = ref(true); // Vuetify form validation state, not automatically updated
+const imagePreviewURL = ref(null); // URL for the image preview
+const avatarImage = ref(null); // The selected File object from input, for preview check
+const defaultButtonText = ref("Select Image"); // Changed from "Upload Image" to "Select Image"
+const selectedFile = ref(null); // The original selected File object
+const isSelecting = ref(false); // To manage button loading state during file selection
 const cardid = ref(null);
 const profile_publicid = ref(null);
 const profileid = ref(null);
-const studentno = ref(null);
+const studentno = ref(null); // Used in assign card dialog for display
+
+// Computed property for filtered list
+const filteredProfileList = computed(() => {
+	if (!search.value) {
+		return profileList.value;
+	}
+	const searchTerm = search.value.toLowerCase();
+	return profileList.value.filter(profile =>
+		profile.studentno.toLowerCase().includes(searchTerm) ||
+		profile.last_name.toLowerCase().includes(searchTerm) ||
+		profile.first_name.toLowerCase().includes(searchTerm) ||
+		(profile.middle_name && profile.middle_name.toLowerCase().includes(searchTerm))
+	);
+});
+
 
 async function initialize() {
 	try {
-		//   Get the Profile history on load of the page
 		const { data: result } = await useFetch("/api/getProfileList");
-		if (result) {
-			console.log(result.value);
+		if (result.value) {
 			const resultList = await updateImageUrls(result.value);
 			if (resultList) {
-			console.log(resultList);
 				profileList.value = resultList;
 			}
 		}
 	} catch (err) {
-		// Handle errors (e.g., console.error or throw an error)
 		console.error("Failed to fetch data: ", err);
-		throw err;
+		toast.error("Failed to load profiles.");
 	}
 }
 
 async function onFileChange(event) {
-	if (event.target.files.length == 0) {
-		console.log("Cancel Upload");
-	} else {
-		const image = event.target.files[0];
-		const originalName = event.target.files[0].name;
-		const ext = originalName.split(".").pop();
-		const blob = image.slice(0, image.size);
-		selectedFile.value = event.target.files[0];
-		publicID.value = uuidv4();
-		newImageName.value = new File([blob], `${publicID.value}.${ext}`, { type: `${image.type}` });
+	const file = event.target.files ? event.target.files[0] : null;
 
-		if (image) {
-			imagePreviewURL.value = URL.createObjectURL(image);
-			URL.revokeObjectURL(image);
-		} else {
-			imagePreviewURL.value = null;
-		}
+	if (!file) {
+		clearImagePreview();
+		return;
 	}
+
+	const originalName = file.name;
+	const ext = originalName.split(".").pop();
+	const blob = file.slice(0, file.size);
+	publicID.value = uuidv4(); // Generate UUID
+	newImageName.value = new File([blob], `${publicID.value}.${ext}`, { type: file.type });
+
+	imagePreviewURL.value = URL.createObjectURL(file);
+	avatarImage.value = file; // Store the actual File object
+	selectedFile.value = file; // For button text
 }
 
-async function clearImagePreview() {
-	imagePreviewURL.value = "";
-	buttonText.value = "Upload Image";
-}
-
-async function cancelAddRecord() {
-	dialog.value = false;
-	imagePreviewURL.value = "";
-	defaultButtonText.value = "Upload Image";
-	loginForm.value?.reset();
+function clearImagePreview() {
+	if (imagePreviewURL.value) {
+		URL.revokeObjectURL(imagePreviewURL.value);
+	}
+	imagePreviewURL.value = null;
 	avatarImage.value = null;
+	selectedFile.value = null;
+	newImageName.value = null; // Important to clear the file prepared for upload
+	if (uploader.value) {
+		uploader.value.value = ''; // Clear the actual file input
+	}
+	defaultButtonText.value = "Select Image";
+}
+
+function cancelAddRecord() {
+	dialog.value = false;
+	clearImagePreview();
+	// Manually clear text fields as loginForm.value?.reset() is for Vuetify forms
+	student_no.value = null;
+	last_name.value = null;
+	first_name.value = null;
+	middle_name.value = null;
 }
 
 async function onSubmit() {
-	const { valid, errors } = await loginForm.value?.validate();
+	// Manual validation
+	if (!student_no.value || !last_name.value || !first_name.value || !middle_name.value) {
+		snackbar_color.value = "error";
+		snackbar_icon.value = "mdi-alert-circle";
+		snackbar_msg.value = "All text fields are required!";
+		snackbar.value = true;
+		return;
+	}
+	if (!newImageName.value) {
+		snackbar_color.value = "error";
+		snackbar_icon.value = "mdi-alert-circle";
+		snackbar_msg.value = "Please select an image!";
+		snackbar.value = true;
+		return;
+	}
+
 	loading.value = true;
-	if (valid) {
-		if (newImageName.value) {
-			try {
-				const formData = new FormData();
-				formData.append('files', newImageName.value);
-				try {
-					const result = await axios.post(`https://tapper.snc.edu.ph/api/upload`, formData, {
-						headers: {
-							'Content-Type': 'multipart/form-data'
-						}
-					}).catch(err=>{
-						console.log(err);
-					});
-					if (result) {
-						console.log(result.data);
+	try {
+		// Use your uploadImage composable, which should handle the FormData internally
+		const imageUploadResult = await uploadImage(newImageName.value);
 
-						const payload = {
-							student_no: student_no.value,
-							last_name: last_name.value,
-							first_name: first_name.value,
-							middle_name: middle_name.value,
-							publicid: result.data[0].hash,
-							image_url: result.data[0].url,
-							image_id: result.data[0].id,
-						};
-						await axios.post(`/api/createProfile`, payload).then(() => {
-							dialog.value = false;
-							loginForm.value?.reset();
-							imagePreviewURL.value = "";
-							avatarImage.value = null;
-							toast.success("Successfully created!");
-							loading.value = false;
-							newImageName.value = null;
-							initialize();
-						});
+		if (imageUploadResult && imageUploadResult[0]) {
+			const payload = {
+				student_no: student_no.value,
+				last_name: last_name.value,
+				first_name: first_name.value,
+				middle_name: middle_name.value,
+				publicid: imageUploadResult[0].hash,
+				image_url: imageUploadResult[0].url,
+				image_id: imageUploadResult[0].id,
+			};
+			await axios.post(`/api/createProfile`, payload);
 
-					}
-				} catch (error) {
-					console.error('Error uploading image: ', error);
-					throw error;
-				}
-
-			} catch (error) {
-				console.error(error);
-				loading.value = false;
-			}
+			dialog.value = false;
+			cancelAddRecord(); // Reusing cancel logic to clear form/image
+			toast.success("Profile successfully created!");
+			initialize(); // Refresh the list
 		} else {
-			console.error("No file selected");
-			toast.error("No image selected!");
-			loading.value = false;
+			toast.error("Image upload failed or returned no data.");
 		}
-	} else {
+	} catch (error) {
+		console.error("Error submitting profile: ", error);
+		toast.error("Failed to create profile: " + (error.response?.data?.message || error.message));
+	} finally {
 		loading.value = false;
-		console.log(errors[0].errorMessages[0]);
 	}
 }
 
-
-
-
-// Function to loop through the array and update the image_url
 async function updateImageUrls(students) {
 	const myBase = await getImageServerUrl();
 	return students.map((student) => {
-		const updatedUrl = formatCurImageUrl(baseUrl,student.image_url); // Call your utility function
+		const updatedUrl = formatCurImageUrl(myBase, student.image_url);
 		return {
 			...student,
-			image_url: updatedUrl, // Update the image_url with the result of formatCurImageUrl
+			image_url: updatedUrl,
 		};
 	});
 }
@@ -350,7 +435,6 @@ async function onButtonClick() {
 		},
 		{ once: true }
 	);
-
 	uploader.value.click();
 }
 
@@ -361,7 +445,7 @@ const buttonText = computed({
 	},
 });
 
-// Show Assign Card Dialog
+// Show Assign Card Dialog (Note: This function is present but not called in the provided template. You might have a button for it elsewhere.)
 async function showAssignCardDialog(item) {
 	assignCardDialog.value = true;
 	studentno.value = item.studentno;
@@ -369,37 +453,43 @@ async function showAssignCardDialog(item) {
 	profileid.value = item.id;
 }
 
-// Assing Card Function
+// Assign Card Function
 async function assignCard() {
-	const { valid, errors } = await assignCardForm.value?.validate();
-	if (valid) {
-		if (cardid.value) {
-			try {
-				let payload = {
-					cardid: cardid.value,
-					profileid: profileid.value,
-					profile_publicid: profile_publicid.value,
-				};
-				await $fetch("/api/assignProfileCard", {
-					method: "POST",
-					body: payload,
-				});
-				assignCardForm.value?.reset();
-				assignCardDialog.value = false;
-				initialize();
-			} catch (error) {
-				console.error(error);
-			}
-		}
-	} else {
-		console.log("Error", errors);
+	if (!cardid.value) {
+		snackbar_color.value = "error";
+		snackbar_icon.value = "mdi-alert-circle";
+		snackbar_msg.value = "Card ID is required!";
+		snackbar.value = true;
+		return;
+	}
+
+	loading.value = true;
+	try {
+		let payload = {
+			cardid: cardid.value,
+			profileid: profileid.value,
+			profile_publicid: profile_publicid.value,
+		};
+		await $fetch("/api/assignProfileCard", {
+			method: "POST",
+			body: payload,
+		});
+		cardid.value = null; // Clear input
+		assignCardDialog.value = false;
+		toast.success("Successfully assigned a card!");
+		initialize();
+	} catch (error) {
+		console.error(error);
+		toast.error("Failed to assign card: " + (error.response?.data?.message || error.message));
+	} finally {
+		loading.value = false;
 	}
 }
 
 // Delete Profile Function
 async function showDeleteProfileDialog(item) {
-	publicID.value = item.publicid;
-	imageID.value = item.image_id;
+	publicID.value = item.publicid; // This is the publicid for the profile, not the image
+	imageID.value = item.image_id; // This is the image ID for deletion
 	deleteProfileDialog.value = true;
 }
 async function deleteItem() {
@@ -409,16 +499,17 @@ async function deleteItem() {
 			image_id: imageID.value,
 		};
 		await $fetch(`/api/profile/delete/${publicID.value}`, {
-			method: "PUT",
+			method: "PUT", // Assuming your API uses PUT for soft delete or update status
 			body: payload,
 		});
 		loading.value = false;
 		deleteProfileDialog.value = false;
 		toast.success("Profile deleted successfully!");
-		initialize();
+		initialize(); // Refresh the list
 	} catch (error) {
 		loading.value = false;
 		console.error(error);
+		toast.error("Failed to delete profile: " + (error.response?.data?.message || error.message));
 	}
 }
 
@@ -427,11 +518,27 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
-.v-input__control {
-	display: none;
+/* Spinner for loading state on buttons */
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: -0.125em;
+  border: 0.125em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: .75s linear infinite spinner-border;
 }
 
-.v-icon--left {
-	margin-right: 8px;
+@keyframes spinner-border {
+  to { transform: rotate(360deg); }
+}
+
+/* Transition for Snackbar */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>

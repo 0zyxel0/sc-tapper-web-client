@@ -1,314 +1,393 @@
+
 <template>
-	<div>
-		<v-row dense>
-			<v-col cols="12" md="3" sm="12">
-				<v-row dense>
-					<v-col cols="12" class="text-center">
-						<v-card elevation="0">
-							<v-card-text v-if="profileDetails">
-								<v-img class="image_url mx-auto" :src="profileImage" alt=""
-									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
-								<v-btn variant="tonal" color="primary" class="text-none mt-2" pre
-									@click="updateImageDialogbox = true" round depressed>
-									<v-icon>mdi-camera</v-icon></v-btn>
+	<div class="p-4">
+		<div class="flex flex-col md:flex-row md:gap-4">
+			<!-- Left Column (Profile Info & Card Details) -->
+			<div class="w-full md:w-3/12 flex flex-col gap-4">
+				<!-- Profile Card -->
+				<div class="bg-white rounded-lg shadow-sm p-4 text-center">
+					<div v-if="profileDetails">
+						<img class="w-[200px] h-[200px] rounded-full object-cover mx-auto border-2 border-purple-700"
+							:src="profileImage" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+						<button @click="updateImageDialogbox = true"
+							class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-full flex items-center justify-center mx-auto hover:bg-purple-700 transition-colors normal-case">
+							<i class="mdi mdi-camera mr-2"></i> Update Photo
+						</button>
 
-								<div class="profile-name">
-									<p>{{ profileDetails.first_name }} {{ profileDetails.last_name }}</p>
-								</div>
-								<div class="profile-studentno">
-									<p>{{ profileDetails.studentno }}</p>
-								</div>
-							</v-card-text>
-							<v-card-text v-else>
-								<v-img class="image_url mx-auto" alt=""
-									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
-							</v-card-text>
-
-							<v-divider class="mt-4"></v-divider>
-							<v-card-actions class="mx-2 my-2">
-								<v-row>
-									<v-col cols="12" md="6">
-										<v-btn prepend-icon="mdi-pencil" color="primary" variant="outlined"
-											@click="updateProfileDialog = true" block>Edit</v-btn>
-									</v-col>
-									<v-col cols="12" md="6">
-										<v-btn prepend-icon="mdi-delete" color="red" variant="outlined" block
-											@click="deleteProfileDialog = true">Delete</v-btn>
-									</v-col>
-								</v-row>
-							</v-card-actions>
-						</v-card>
-					</v-col>
-					<v-col cols="12">
-						<v-card elevation="0">
-							<v-card-text>
-								<p class="font-weight-bold"><v-icon aria-hidden="false" size="30"
-										color="primary">mdi-card-account-details</v-icon> Card Details</p>
-								<v-divider class="my-2"></v-divider>
-								<div class="mt-3" v-if="profileDetails.is_card_assign == true">
-									<v-row dense>
-										<v-col cols="4">
-											<p class="text-caption font-weight-bold">Card #:</p>
-										</v-col>
-										<v-col cols="8">
-											<p class="">{{ cardDetails.cardid }}</p>
-										</v-col>
-										<v-col cols="4">
-											<p class="text-caption font-weight-bold">Status:</p>
-										</v-col>
-										<v-col cols="8">
-											<p v-if="cardDetails.is_active == true"><v-badge dot color="success"
-													inline></v-badge>Active</p>
-											<p v-else><v-badge dot color="error" inline></v-badge>Inactive</p>
-										</v-col>
-									</v-row>
-								</div>
-								<div v-else class="text-center">
-									<v-icon size="50" color="grey">mdi-smart-card-off</v-icon>
-									<p class="text-overline">No Assign Card</p>
-								</div>
-							</v-card-text>
-							<v-divider></v-divider>
-							<v-card-actions>
-								<v-btn v-if="profileDetails.is_card_assign == true" prepend-icon="mdi-link-off"
-									class="my-2" color="red" variant="outlined" block
-									@click="showUnlinkDialogBox">Unlink</v-btn>
-
-								<v-btn v-else prepend-icon="mdi-link-plus" class="my-2" color="primary"
-									variant="outlined" block @click="assignCardDialog = true">Link Card</v-btn>
-							</v-card-actions>
-						</v-card>
-					</v-col>
-				</v-row>
-			</v-col>
-			<!-- <v-col cols="12" md="1">
-              <v-divider style="height: 100%;" inset vertical></v-divider>
-            </v-col> -->
-			<v-col cols="12" md="9" sm="12">
-				<v-card elevation="0">
-					<v-tabs v-model="tab" align-tabs="start" bg-color="white" color="primary">
-						<v-tab :value="1">Info</v-tab>
-						<v-tab :value="2">Emergency Contacts</v-tab>
-					</v-tabs>
-					<v-tabs-window v-model="tab">
-						<v-tabs-window-item :value="1">
-							<v-card elevation="0">
-								<v-card-text>
-									<v-text-field :model-value="profileDetails.studentno" label="Student No"
-										readonly></v-text-field>
-									<v-text-field :model-value="profileDetails.last_name" label="Last name"
-										readonly></v-text-field>
-									<v-text-field :model-value="profileDetails.first_name" label="First name"
-										readonly></v-text-field>
-									<v-text-field :model-value="profileDetails.middle_name" label="Middle name"
-										readonly></v-text-field>
-								</v-card-text>
-							</v-card>
-						</v-tabs-window-item>
-
-						<v-tabs-window-item :value="2">
-							<v-card elevation="0" v-if="profileStore.myEmergencyContacts == null">
-								<v-card-text>
-									<v-text-field v-model="ctName" label="Emergency Contact Person"></v-text-field>
-									<v-text-field v-model="ctRelation" label="Contact Relation"></v-text-field>
-									<v-text-field v-model="ctMobileNumber" label="Contact Number"></v-text-field>
-								</v-card-text>
-								<v-card-actions>
-									<v-btn block variant="flat" color="green" @click="saveContact">Save</v-btn>
-								</v-card-actions>
-							</v-card>
-							<v-card elevation="0" v-else>
-								<v-card-text>
-									<v-text-field v-model="profileStore.myEmergencyContacts.contactname"
-										label="Emergency Contact Person"></v-text-field>
-									<v-text-field v-model="profileStore.myEmergencyContacts.relation"
-										label="Contact Relation"></v-text-field>
-									<v-text-field v-model="profileStore.myEmergencyContacts.mobilenumber"
-										label="Contact Number"></v-text-field>
-								</v-card-text>
-								<v-card-actions>
-									<v-row>
-										<v-col><v-btn variant="flat" block color="orange">Edit</v-btn></v-col>
-										<v-col> <v-btn variant="flat" block color="green">Save</v-btn></v-col>
-									</v-row>
-								</v-card-actions>
-							</v-card>
-						</v-tabs-window-item>
-					</v-tabs-window>
-				</v-card>
-			</v-col>
-		</v-row>
-
-		<!----------------------------- START DIALOG BOX ---------------------------------->
-		<!-- Loader -->
-		<v-dialog v-model="loader" max-width="320" persistent>
-			<v-list class="py-2" color="primary" elevation="12" rounded="lg">
-				<v-list-item prepend-icon="mdi-link-off" title="Unlinking card...">
-					<template v-slot:prepend>
-						<div class="pe-4">
-							<v-icon color="primary" size="x-large"></v-icon>
+						<div class="mt-5 text-lg font-semibold uppercase">
+							<p>{{ profileDetails.first_name }} {{ profileDetails.last_name }}</p>
 						</div>
-					</template>
+						<div class="text-base font-semibold text-gray-600">
+							<p>{{ profileDetails.studentno }}</p>
+						</div>
+					</div>
+					<div v-else>
+						<img class="w-[200px] h-[200px] rounded-full object-cover mx-auto border-2 border-gray-300"
+							alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+					</div>
 
-					<template v-slot:append>
-						<v-progress-circular color="primary" indeterminate="disable-shrink" size="16"
-							width="2"></v-progress-circular>
-					</template>
-				</v-list-item>
-			</v-list>
-		</v-dialog>
+					<hr class="my-4 border-t border-gray-200" />
+					<div class="flex flex-col md:flex-row gap-2 mx-2 my-2">
+						<div class="w-full md:w-1/2">
+							<button @click="updateProfileDialog = true"
+								class="w-full px-4 py-2 border border-purple-600 text-purple-600 rounded-md flex items-center justify-center hover:bg-purple-50 transition-colors normal-case">
+								<i class="mdi mdi-pencil mr-2"></i> Edit
+							</button>
+						</div>
+						<div class="w-full md:w-1/2">
+							<button @click="deleteProfileDialog = true"
+								class="w-full px-4 py-2 border border-red-600 text-red-600 rounded-md flex items-center justify-center hover:bg-red-50 transition-colors normal-case">
+								<i class="mdi mdi-delete mr-2"></i> Delete
+							</button>
+						</div>
+					</div>
+				</div>
 
-		<!-- Start Unlink Dialog Box -->
-		<v-dialog v-model="unlinkDialogbox" width="auto">
-			<v-card max-width="400" prepend-icon="mdi-link-off" color="blue-grey-darken-4"
-				text="Are you sure you want to unlink your card?" title="Unlink Card">
-				<template v-slot:actions>
-					<v-btn variant="tonal" text="Unlink" prepend-icon="mdi-link-off" color="red"
-						@click="unlinkCard"></v-btn>
-					<v-btn variant="tonal" text="Cancel" @click="unlinkDialogbox = false"></v-btn>
-				</template>
-			</v-card>
-		</v-dialog>
-		<!-- End Unlink Dialog Box -->
+				<!-- Card Details Card -->
+				<div class="bg-white rounded-lg shadow-sm p-4">
+					<p class="font-bold flex items-center">
+						<i class="mdi mdi-card-account-details text-primary text-2xl mr-2"></i> Card Details
+					</p>
+					<hr class="my-2 border-t border-gray-200" />
+					<div class="mt-3" v-if="profileDetails.is_card_assign == true">
+						<div class="grid grid-cols-12 gap-y-1">
+							<div class="col-span-4 text-sm font-bold">Card #:</div>
+							<div class="col-span-8">{{ cardDetails.cardid }}</div>
+							<div class="col-span-4 text-sm font-bold">Status:</div>
+							<div class="col-span-8 flex items-center">
+								<span v-if="cardDetails.is_active == true" class="flex items-center">
+									<span class="w-2 h-2 rounded-full bg-green-500 inline-block mr-2"></span>Active
+								</span>
+								<span v-else class="flex items-center">
+									<span class="w-2 h-2 rounded-full bg-red-500 inline-block mr-2"></span>Inactive
+								</span>
+							</div>
+						</div>
+					</div>
+					<div v-else class="text-center py-4">
+						<i class="mdi mdi-smart-card-off text-gray-400 text-5xl"></i>
+						<p class="text-xs uppercase mt-2">No Assign Card</p>
+					</div>
 
-		<!-- Start Assign Card Dialog -->
-		<v-dialog v-model="assignCardDialog" persistent max-width="500">
-			<v-card>
-				<v-toolbar color="transparent">
-					<template v-slot:prepend>
-						<v-icon class="ml-4" color="primary">mdi-image</v-icon>
-					</template>
-					<v-toolbar-title class="text-h6">Assign Card to {{ profileDetails.studentno }}</v-toolbar-title>
+					<hr class="my-2 border-t border-gray-200" />
+					<div class="flex justify-center mt-2">
+						<button v-if="profileDetails.is_card_assign == true" @click="showUnlinkDialogBox"
+							class="w-full px-4 py-2 border border-red-600 text-red-600 rounded-md flex items-center justify-center hover:bg-red-50 transition-colors normal-case">
+							<i class="mdi mdi-link-off mr-2"></i> Unlink
+						</button>
 
-					<template v-slot:append>
-						<v-btn icon="mdi-close" @click="assignCardDialog = false"></v-btn>
-					</template>
-				</v-toolbar>
-				<v-form v-model="cardvalid" @submit.prevent ref="assignCardForm" lazy-validation>
-					<!-- <v-card-title>
-            Assign Card to {{ profileDetails.studentno }}
-          </v-card-title> -->
-					<v-card-text>
-						<v-text-field :rules="rules.cardid" v-model="cardid" label="Assign card"
-							prepend-inner-icon="mdi-card-account-details" clearable></v-text-field>
-					</v-card-text>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn color="primary" variant="elevated" @click="assignCard()">Assign</v-btn>
-						<!-- <v-btn variant="elevated" @click="assignCardDialog = false">Close</v-btn> -->
-					</v-card-actions>
-				</v-form>
-			</v-card>
-		</v-dialog>
-		<!-- End Assign Card Dialog -->
+						<button v-else @click="assignCardDialog = true"
+							class="w-full px-4 py-2 border border-purple-600 text-purple-600 rounded-md flex items-center justify-center hover:bg-purple-50 transition-colors normal-case">
+							<i class="mdi mdi-link-plus mr-2"></i> Link Card
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right Column (Tabs: Info & Emergency Contacts) -->
+			<div class="w-full md:w-9/12 mt-4 md:mt-0">
+				<div class="bg-white rounded-lg shadow-sm">
+					<!-- Tab Navigation -->
+					<div class="flex border-b border-gray-200 bg-white rounded-t-lg">
+						<button @click="tab = 1"
+							:class="['px-6 py-3 text-gray-600 font-semibold', { 'border-b-2 border-purple-600 text-purple-600': tab === 1 }]">
+							Info
+						</button>
+						<button @click="tab = 2"
+							:class="['px-6 py-3 text-gray-600 font-semibold', { 'border-b-2 border-purple-600 text-purple-600': tab === 2 }]">
+							Emergency Contacts
+						</button>
+					</div>
+
+					<!-- Tab Content -->
+					<div class="p-4">
+						<div v-if="tab === 1">
+							<div class="bg-white">
+								<div class="grid grid-cols-1 gap-4">
+									<div class="relative">
+										<label for="studentNo" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Student No</label>
+										<input id="studentNo" type="text" :value="profileDetails.studentno" readonly
+											class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+									</div>
+									<div class="relative">
+										<label for="lastName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Last name</label>
+										<input id="lastName" type="text" :value="profileDetails.last_name" readonly
+											class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+									</div>
+									<div class="relative">
+										<label for="firstName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">First name</label>
+										<input id="firstName" type="text" :value="profileDetails.first_name" readonly
+											class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+									</div>
+									<div class="relative">
+										<label for="middleName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Middle name</label>
+										<input id="middleName" type="text" :value="profileDetails.middle_name" readonly
+											class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div v-if="tab === 2">
+							<div class="bg-white">
+								<div class="grid grid-cols-1 gap-4">
+									<div v-if="profileStore.myEmergencyContacts == null">
+										<div class="relative">
+											<label for="ctName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Emergency Contact Person</label>
+											<input id="ctName" type="text" v-model="ctName"
+												class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+										</div>
+										<div class="relative mt-4">
+											<label for="ctRelation" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Contact Relation</label>
+											<input id="ctRelation" type="text" v-model="ctRelation"
+												class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+										</div>
+										<div class="relative mt-4">
+											<label for="ctMobileNumber" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Contact Number</label>
+											<input id="ctMobileNumber" type="text" v-model="ctMobileNumber"
+												class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+										</div>
+										<div class="mt-6">
+											<button @click="saveContact"
+												class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors normal-case">
+												Save
+											</button>
+										</div>
+									</div>
+									<div v-else>
+										<div class="relative">
+											<label for="ctNameEdit" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Emergency Contact Person</label>
+											<input id="ctNameEdit" type="text" v-model="profileStore.myEmergencyContacts.contactname"
+												class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+										</div>
+										<div class="relative mt-4">
+											<label for="ctRelationEdit" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Contact Relation</label>
+											<input id="ctRelationEdit" type="text" v-model="profileStore.myEmergencyContacts.relation"
+												class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+										</div>
+										<div class="relative mt-4">
+											<label for="ctMobileNumberEdit" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Contact Number</label>
+											<input id="ctMobileNumberEdit" type="text" v-model="profileStore.myEmergencyContacts.mobilenumber"
+												class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+										</div>
+										<div class="mt-6 flex gap-4">
+											<div class="w-1/2">
+												<button
+													class="w-full px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors normal-case">
+													Edit
+												</button>
+											</div>
+											<div class="w-1/2">
+												<button
+													class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors normal-case">
+													Save
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- START DIALOG BOXES -->
+
+		<!-- Loader Dialog -->
+		<div v-if="loader" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-white rounded-lg p-6 max-w-sm flex items-center shadow-lg">
+				<div class="mr-4">
+					<i class="mdi mdi-link-off text-purple-600 text-3xl"></i>
+				</div>
+				<div class="text-lg text-gray-800">Unlinking card...</div>
+				<div class="ml-auto">
+					<div class="loader ease-linear rounded-full border-2 border-t-2 border-purple-400 h-6 w-6"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Unlink Dialog Box -->
+		<div v-if="unlinkDialogbox"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+				<div class="flex items-center mb-4">
+					<i class="mdi mdi-link-off text-2xl mr-3"></i>
+					<h3 class="text-xl font-semibold">Unlink Card</h3>
+				</div>
+				<p class="text-gray-200 mb-6">Are you sure you want to unlink your card?</p>
+				<div class="flex justify-end gap-3">
+					<button @click="unlinkCard"
+						class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center hover:bg-red-700 transition-colors normal-case">
+						<i class="mdi mdi-link-off mr-2"></i> Unlink
+					</button>
+					<button @click="unlinkDialogbox = false"
+						class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors normal-case">
+						Cancel
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Assign Card Dialog -->
+		<div v-if="assignCardDialog"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
+				<div class="flex items-center p-4 border-b border-gray-200">
+					<i class="mdi mdi-image text-purple-600 text-2xl mr-3"></i>
+					<h3 class="text-lg font-semibold text-gray-800">Assign Card to {{ profileDetails.studentno }}</h3>
+					<button @click="assignCardDialog = false" class="ml-auto text-gray-500 hover:text-gray-700">
+						<i class="mdi mdi-close text-xl"></i>
+					</button>
+				</div>
+				<form @submit.prevent="assignCard" ref="assignCardForm" class="p-6">
+					<div class="relative mb-6">
+						<label for="cardId" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Assign card</label>
+						<div class="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-purple-500">
+							<i class="mdi mdi-card-account-details text-gray-500 ml-3"></i>
+							<input id="cardId" type="text" v-model="cardid" :rules="rules.cardid"
+								class="flex-grow p-2 rounded-r-md focus:outline-none" />
+							<button v-if="cardid" @click="cardid = null" type="button" class="text-gray-500 p-2 hover:text-gray-700">
+								<i class="mdi mdi-close-circle"></i>
+							</button>
+						</div>
+					</div>
+					<div class="flex justify-end">
+						<button type="submit"
+							class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors normal-case">
+							Assign
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
 
 		<!-- Update Profile Info Dialog -->
-		<v-dialog width="auto" v-model="updateProfileDialog" persistent>
-			<v-card title="Update Record" width="800">
-				<v-form v-model="valid" ref="updateInfoForm" lazy-validation>
-					<v-divider></v-divider>
-					<v-card-text>
-						<v-row>
-							<v-col cols="4" v-if="profileDetails">
-								<v-img class="image_url mx-auto"
-									:src="profileImage" alt=""
-									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
-							</v-col>
-							<v-col cols="4" v-else>
-								<v-img class="image_url mx-auto" alt=""
-									lazy-src="https://fakeimg.pl/400x400?text=Photo" />
-							</v-col>
-							<v-col cols="8">
-								<v-text-field v-model="student_no" :rules="rules.studentno"
-									label="Student No"></v-text-field>
-								<v-text-field v-model="last_name" :rules="rules.lastname"
-									label="Last name"></v-text-field>
-								<v-text-field v-model="first_name" :rules="rules.firstname"
-									label="First name"></v-text-field>
-								<v-text-field v-model="middle_name" :rules="rules.middlename"
-									label="Middle name"></v-text-field>
-							</v-col>
-						</v-row>
-						<div class="d-flex mb-3"></div>
-					</v-card-text>
-					<v-card-actions>
-						<v-spacer></v-spacer>
-						<v-btn variant="elevated" color="success" @click="updateInfo"> Update </v-btn>
-						<v-btn variant="elevated" color="error" @click="updateProfileDialog = false"> Cancel </v-btn>
-						<v-spacer></v-spacer>
-					</v-card-actions>
-				</v-form>
-			</v-card>
-		</v-dialog>
-		<!-- End Update Profile Info Dialog -->
-
-		<!-- Start Update Image Dialog Box -->
-		<v-dialog v-model="updateImageDialogbox" persistent max-width="300">
-			<v-card>
-				<v-toolbar color="transparent">
-					<template v-slot:prepend>
-						<v-icon class="ml-4" color="primary">mdi-image</v-icon>
-					</template>
-					<v-toolbar-title class="text-h6" text="Update Photo"></v-toolbar-title>
-
-					<template v-slot:append>
-						<v-btn icon="mdi-close" @click="closeImageUpload"></v-btn>
-					</template>
-				</v-toolbar>
-				<v-divider></v-divider>
-				<v-card-text>
-					<v-img :src="avatarImage ? imagePreviewURL : ''" alt=""
-						lazy-src="https://fakeimg.pl/400x400?text=Photo" style="max-width: 100%; object-fit: cover"
-						height="30vh" />
-
-					<v-file-input :rules="rules.photo" v-model="avatarImage" accept="image/png, image/jpeg, image/bmp"
-						density="compact" prepend-icon="mdi-camera" label="Upload Image" ref="uploader" required
-						class="d-none" @change="onFileChange" @click:clear="clearImagePreview()"></v-file-input>
-
-					<div class="d-flex align-center justify-center">
-						<v-btn color="primary" class="text-none mt-2" variant="tonal" :loading="isSelecting"
-							@click="onButtonClick">
-							<v-icon>mdi-image</v-icon>
-						</v-btn>
+		<div v-if="updateProfileDialog"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-white rounded-lg shadow-xl max-w-3xl w-full">
+				<div class="p-4 border-b border-gray-200">
+					<h3 class="text-lg font-semibold text-gray-800">Update Record</h3>
+				</div>
+				<form @submit.prevent="updateInfo" ref="updateInfoForm" class="p-6">
+					<hr class="mb-4 border-t border-gray-200" />
+					<div class="flex flex-col md:flex-row gap-6">
+						<div class="w-full md:w-1/3 flex justify-center items-start">
+							<img v-if="profileDetails"
+								class="w-[200px] h-[200px] rounded-full object-cover border-2 border-purple-700"
+								:src="profileImage" alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+							<img v-else class="w-[200px] h-[200px] rounded-full object-cover border-2 border-gray-300"
+								alt="" lazy-src="https://fakeimg.pl/400x400?text=Photo" />
+						</div>
+						<div class="w-full md:w-2/3 grid grid-cols-1 gap-4">
+							<div class="relative">
+								<label for="editStudentNo" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Student No</label>
+								<input id="editStudentNo" type="text" v-model="student_no" :rules="rules.studentno"
+									class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+							</div>
+							<div class="relative">
+								<label for="editLastName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Last name</label>
+								<input id="editLastName" type="text" v-model="last_name" :rules="rules.lastname"
+									class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+							</div>
+							<div class="relative">
+								<label for="editFirstName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">First name</label>
+								<input id="editFirstName" type="text" v-model="first_name" :rules="rules.firstname"
+									class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+							</div>
+							<div class="relative">
+								<label for="editMiddleName" class="absolute left-3 -top-2 text-xs text-gray-500 bg-white px-1">Middle name</label>
+								<input id="editMiddleName" type="text" v-model="middle_name" :rules="rules.middlename"
+									class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+							</div>
+						</div>
 					</div>
-				</v-card-text>
+					<div class="flex justify-center gap-4 mt-6">
+						<button type="submit"
+							class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors normal-case">
+							Update
+						</button>
+						<button type="button" @click="updateProfileDialog = false"
+							class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors normal-case">
+							Cancel
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
 
-				<v-card-actions class="justify-center">
-					<v-btn color="primary" class="text-none mt-2" block round variant="elevated"
-						prepend-icon="mdi-cloud-upload" @click="uploadUpdatedImage">
-						Upload
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-		<!-- End Update Image Dialog Box -->
+		<!-- Update Image Dialog Box -->
+		<div v-if="updateImageDialogbox"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-white rounded-lg shadow-xl max-w-sm w-full">
+				<div class="flex items-center p-4 border-b border-gray-200">
+					<i class="mdi mdi-image text-purple-600 text-2xl mr-3"></i>
+					<h3 class="text-lg font-semibold text-gray-800">Update Photo</h3>
+					<button @click="closeImageUpload" class="ml-auto text-gray-500 hover:text-gray-700">
+						<i class="mdi mdi-close text-xl"></i>
+					</button>
+				</div>
+				<div class="p-6">
+					<img :src="avatarImage ? imagePreviewURL : 'https://fakeimg.pl/400x400?text=Photo'" alt="Image Preview"
+						class="w-full h-40 object-cover rounded-md mb-4 border border-gray-200" />
 
-		<!-- Start Delete Profile Dialog Box -->
-		<v-dialog v-model="deleteProfileDialog" width="auto">
-			<v-card max-width="400" prepend-icon="mdi-delete-alert" color="blue-grey-darken-4"
-				text="Are you sure you want to delete this profile?" title="Delete Profile">
-				<template v-slot:actions>
-					<v-btn variant="tonal" :loading="loading" text="Delete" @click="deleteProfile"
-						prepend-icon="mdi-delete" color="red"></v-btn>
-					<v-btn variant="tonal" text="Cancel" @click="deleteProfileDialog = false"></v-btn>
-				</template>
-			</v-card>
-		</v-dialog>
-		<!-- End Delete Profile Dialog Box -->
+					<input type="file" ref="uploader" @change="onFileChange" @click="clearImagePreview()"
+						accept="image/png, image/jpeg, image/bmp" class="hidden" />
 
-		<!----------------------------- END DIALOG BOX ---------------------------------->
+					<div class="flex justify-center mb-4">
+						<button type="button" @click="onButtonClick" :disabled="isSelecting"
+							class="px-6 py-2 bg-purple-600 text-white rounded-md flex items-center hover:bg-purple-700 transition-colors normal-case"
+							:class="{ 'opacity-50 cursor-not-allowed': isSelecting }">
+							<i class="mdi mdi-image mr-2"></i> Select Image
+						</button>
+					</div>
 
-		<!------------------------------- START SNACKBAR ------------------------------->
-		<v-snackbar v-model="snackbar" :color="snackbar_color" location="top right">
-			<v-icon start>{{ snackbar_icon }}</v-icon>
-			{{ snackbar_msg }}
+					<button @click="uploadUpdatedImage"
+						class="w-full px-6 py-2 bg-purple-600 text-white rounded-md flex items-center justify-center hover:bg-purple-700 transition-colors normal-case">
+						<i class="mdi mdi-cloud-upload mr-2"></i> Upload
+					</button>
+				</div>
+			</div>
+		</div>
 
-			<template v-slot:actions>
-				<v-btn icon="mdi-close" size="x-small" @click="snackbar = false"> </v-btn>
-			</template>
-		</v-snackbar>
+		<!-- Delete Profile Dialog Box -->
+		<div v-if="deleteProfileDialog"
+			class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div class="bg-gray-800 text-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+				<div class="flex items-center mb-4">
+					<i class="mdi mdi-delete-alert text-2xl mr-3"></i>
+					<h3 class="text-xl font-semibold">Delete Profile</h3>
+				</div>
+				<p class="text-gray-200 mb-6">Are you sure you want to delete this profile?</p>
+				<div class="flex justify-end gap-3">
+					<button @click="deleteProfile" :disabled="loading"
+						class="px-4 py-2 bg-red-600 text-white rounded-md flex items-center hover:bg-red-700 transition-colors normal-case"
+						:class="{ 'opacity-50 cursor-not-allowed': loading }">
+						<i class="mdi mdi-delete mr-2"></i> Delete
+					</button>
+					<button @click="deleteProfileDialog = false"
+						class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors normal-case">
+						Cancel
+					</button>
+				</div>
+			</div>
+		</div>
 
-		<!------------------------------- END SNACKBAR ------------------------------->
+		<!-- END DIALOG BOXES -->
+
+		<!-- START SNACKBAR -->
+		<transition name="fade">
+			<div v-if="snackbar"
+				:class="['fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg text-white flex items-center', { 'bg-green-500': snackbar_color === 'success', 'bg-red-500': snackbar_color === 'error', 'bg-blue-500': snackbar_color === 'info' }]">
+				<i :class="['mdi mr-2', snackbar_icon]"></i>
+				<span>{{ snackbar_msg }}</span>
+				<button @click="snackbar = false" class="ml-auto text-white opacity-75 hover:opacity-100">
+					<i class="mdi mdi-close text-sm"></i>
+				</button>
+			</div>
+		</transition>
+		<!-- END SNACKBAR -->
 	</div>
 </template>
 
@@ -318,13 +397,13 @@ definePageMeta({
 });
 
 import { useRoute } from "vue-router";
-import { useToast } from "vue-toastification";
+import { useToast } from "vue-toastification"; // Keep this for toast messages if you still want them
 import axios from "axios";
 import { useProfileStore } from "~/stores/profile";
 const profileStore = useProfileStore();
 const route = useRoute();
 const router = useRouter();
-const toast = useToast();
+const toast = useToast(); // Using vue-toastification for actual toasts, as snackbar is a custom implementation.
 const { getBackendUrl, formatCurImageUrl, uploadUpdateImage, getImageServerUrl } = useUtils();
 const config = useRuntimeConfig();
 const imageBase = config.public.imageBase;
@@ -336,7 +415,7 @@ const updateProfileDialog = ref(false);
 const updateImageDialogbox = ref(false);
 const deleteProfileDialog = ref(false);
 
-// Snackbar
+// Snackbar (custom implementation)
 const snackbar = ref(false);
 const snackbar_color = ref("");
 const snackbar_msg = ref("");
@@ -344,14 +423,14 @@ const snackbar_icon = ref("");
 
 // Loader
 const loading = ref(false);
-const tab = ref(null);
+const tab = ref(1); // Default to first tab
 const profileid = ref(null);
 const profile_publicid = ref(null);
-const assignCardForm = ref(null);
-const cardvalid = ref(true);
+const assignCardForm = ref(null); // Used for form validation reference
+const cardvalid = ref(true); // Vuetify form validation state, might not be needed directly for Tailwind forms
 const cardid = ref(null);
-const valid = ref(true);
-const updateInfoForm = ref(null);
+const valid = ref(true); // Vuetify form validation state
+const updateInfoForm = ref(null); // Used for form validation reference
 const imagePreviewURL = ref(null);
 const uploader = ref(null);
 const selectedFile = ref(null);
@@ -374,6 +453,8 @@ const ctName = ref(null);
 const ctRelation = ref(null);
 const ctMobileNumber = ref(null);
 const serverBackendBase = ref("");
+
+// Rules for validation (these are Vuetify-style rules, you'd integrate a separate validation library like VeeValidate for a pure Tailwind form setup)
 const rules = ref({
 	studentno: [(v) => !!v || "Student no is required"],
 	lastname: [(v) => !!v || "Lastname is required"],
@@ -405,67 +486,70 @@ async function initialize() {
 		}
 		const myEmergencyContact = await profileStore.getEmergencyContactDetails(route.params.id);
 		if (myEmergencyContact) {
-
+			// Logic if contact exists
 		}
 	} catch (error) {
 		console.error("Failed to fetch data: ", error);
-		throw error;
+		// Consider showing a toast/snackbar for error
 	}
 }
 
-// Assing Card Function
+// Assign Card Function
 async function assignCard() {
-	const { valid, errors } = await assignCardForm.value?.validate();
-	if (valid) {
-		if (cardid.value) {
-			loader.value = true;
-			try {
-				let payload = {
-					cardid: cardid.value,
-					profileid: profileid.value,
-					profile_publicid: profile_publicid.value,
-				};
-				await $fetch("/api/assignProfileCard", {
-					method: "POST",
-					body: payload,
-				});
-				assignCardForm.value?.reset();
-				assignCardDialog.value = false;
-				loader.value = false;
-				toast.success("Successfully assigned a card!");
-				initialize();
-			} catch (error) {
-				console.error(error);
-			}
-		}
-	} else {
-		console.log("Error", errors);
+	// For actual validation without Vuetify, you'd implement logic here or use a library like VeeValidate
+	if (!cardid.value) {
+		toast.error("Card ID is required!");
+		return;
+	}
+
+	loader.value = true;
+	try {
+		let payload = {
+			cardid: cardid.value,
+			profileid: profileid.value,
+			profile_publicid: profile_publicid.value,
+		};
+		await $fetch("/api/assignProfileCard", {
+			method: "POST",
+			body: payload,
+		});
+		cardid.value = null; // Clear input
+		assignCardDialog.value = false;
+		loader.value = false;
+		toast.success("Successfully assigned a card!");
+		initialize();
+	} catch (error) {
+		loader.value = false;
+		console.error(error);
+		toast.error("Failed to assign card: " + error.message);
 	}
 }
 
 // Update Info Function
 async function updateInfo() {
-	const { valid, errors } = await updateInfoForm.value?.validate();
+	// Manual validation check for simplicity, replace with a dedicated library for robust validation
+	if (!student_no.value || !last_name.value || !first_name.value || !middle_name.value) {
+		toast.error("All info fields are required!");
+		return;
+	}
 
-	if (valid) {
-		try {
-			const payload = {
-				student_no: student_no.value,
-				last_name: last_name.value,
-				first_name: first_name.value,
-				middle_name: middle_name.value,
-			};
-			await $fetch(`/api/profile/update/${route.params.id}`, {
-				method: "PUT",
-				body: payload,
-			});
-			toast.success("Profile successfully updated!");
-			initialize();
-		} catch (error) {
-			console.error(error);
-		}
-	} else {
-		console.log(errors[0].errorMessages[0]);
+	try {
+		const payload = {
+			student_no: student_no.value,
+			last_name: last_name.value,
+			first_name: first_name.value,
+			middle_name: middle_name.value,
+		};
+		await $fetch(`/api/profile/update/${route.params.id}`, {
+			method: "PUT",
+			body: payload,
+		});
+		toast.success("Profile successfully updated!");
+		updateProfileDialog.value = false; // Close dialog
+		initialize();
+	} catch (error) {
+		console.error(error);
+		toast.error("Failed to update profile: " + error.message);
 	}
 }
 
@@ -484,18 +568,21 @@ async function unlinkCard() {
 		});
 		if (response) {
 			loader.value = false;
-			toast.success("Successfully unlink the card!");
+			toast.success("Successfully unlinked the card!");
 			initialize();
 		}
 	} catch (error) {
+		loader.value = false;
 		console.error("Failed to unlink card: ", error);
-		throw error;
+		toast.error("Failed to unlink card: " + error.message);
 	}
 }
 
 async function onFileChange(event) {
-	if (event.target.files.length == 0) {
+	if (event.target.files.length === 0) {
 		console.log("Cancel Upload");
+		avatarImage.value = null;
+		imagePreviewURL.value = null;
 	} else {
 		const image = event.target.files[0];
 		const originalName = event.target.files[0].name;
@@ -506,11 +593,22 @@ async function onFileChange(event) {
 
 		if (image) {
 			imagePreviewURL.value = URL.createObjectURL(image);
-			URL.revokeObjectURL(image);
+			avatarImage.value = image; // Keep avatarImage for v-if check
 		} else {
 			imagePreviewURL.value = null;
+			avatarImage.value = null;
 		}
 	}
+}
+
+function clearImagePreview() {
+	// This is called when the file input's clear button is clicked.
+	// It's a Vuetify specific prop, but for a standard input, you'd manage it differently.
+	// For now, it simply ensures the preview is cleared if the file is deselected.
+	imagePreviewURL.value = null;
+	avatarImage.value = null;
+	selectedFile.value = null;
+	newImageName.value = null;
 }
 
 async function onButtonClick() {
@@ -522,47 +620,49 @@ async function onButtonClick() {
 		},
 		{ once: true }
 	);
-
-	uploader.value.click();
+	uploader.value.click(); // Trigger the hidden file input
 }
 
 async function closeImageUpload() {
 	updateImageDialogbox.value = false;
-	imagePreviewURL.value = "";
+	imagePreviewURL.value = null;
 	avatarImage.value = null;
+	newImageName.value = null; // Clear selected file for upload
 }
 
 async function uploadUpdatedImage() {
-	if (newImageName.value) {
-		try {
-			// Delete current image then upload the updated image
-			const response = await $fetch(`/api/profile/photo/delete/${image_id.value}`);
-			if (response) {
-				uploadResult.value = await uploadUpdateImage(newImageName.value);
-				const payload = {
-					image_url: uploadResult.value[0].url,
-					image_id: uploadResult.value[0].id,
-				};
-
-				await $fetch(`/api/profile/photo/update/${route.params.id}`, {
-					method: "PUT",
-					body: payload,
-				});
-				snackbar.value = true;
-				snackbar_icon.value = "mdi-check-circle";
-				snackbar_color.value = "success";
-				snackbar_msg.value = "Profile photo updated successfully!";
-				newImageName.value = null;
-				initialize();
-			} else {
-				console.error("Error deleting current image");
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	} else {
+	if (!newImageName.value) {
 		toast.error("No image selected!");
-		console.error("No image selected!");
+		return;
+	}
+
+	try {
+		// Delete current image then upload the updated image
+		const response = await $fetch(`/api/profile/photo/delete/${image_id.value}`);
+		if (response) {
+			uploadResult.value = await uploadUpdateImage(newImageName.value);
+			const payload = {
+				image_url: uploadResult.value[0].url,
+				image_id: uploadResult.value[0].id,
+			};
+
+			await $fetch(`/api/profile/photo/update/${route.params.id}`, {
+				method: "PUT",
+				body: payload,
+			});
+			snackbar.value = true; // Use custom snackbar
+			snackbar_icon.value = "mdi-check-circle";
+			snackbar_color.value = "success";
+			snackbar_msg.value = "Profile photo updated successfully!";
+			newImageName.value = null;
+			updateImageDialogbox.value = false; // Close dialog
+			initialize();
+		} else {
+			toast.error("Error deleting current image.");
+		}
+	} catch (error) {
+		console.error(error);
+		toast.error("Failed to upload image: " + error.message);
 	}
 }
 
@@ -579,14 +679,21 @@ async function deleteProfile() {
 		});
 		loading.value = false;
 		toast.success("Profile deleted successfully!");
+		deleteProfileDialog.value = false; // Close dialog
 		await navigateTo("/admin/profiles");
 	} catch (error) {
 		loading.value = false;
 		console.error(error);
+		toast.error("Failed to delete profile: " + error.message);
 	}
 }
 
 async function saveContact() {
+	if (!ctName.value || !ctRelation.value || !ctMobileNumber.value) {
+		toast.error("All emergency contact fields are required.");
+		return;
+	}
+
 	try {
 		const payload = {
 			name: ctName.value,
@@ -595,12 +702,14 @@ async function saveContact() {
 			profile_publicid: route.params.id,
 		};
 		loading.value = true;
-		await axios.post("/api/profile/assignEmergencyContact", payload).then((res) => {
-			toast.success("Successfully Saved Profile Contact");
-			loading.value = false;
-		});
+		await axios.post("/api/profile/assignEmergencyContact", payload);
+		toast.success("Successfully Saved Profile Contact");
+		loading.value = false;
+		initialize(); // Re-fetch to update contact details
 	} catch (err) {
+		loading.value = false;
 		console.log(err);
+		toast.error("Failed to save contact: " + err.message);
 	}
 }
 
@@ -610,27 +719,25 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.image_url {
-	border: 2px solid #673ab7;
-	border-radius: 50%;
-	max-width: 200px;
-	object-fit: cover;
+/* Custom loader for the dialog */
+.loader {
+	animation: spin 1s linear infinite;
 }
 
-.profile-name {
-	font-size: 2.8vh;
-	margin: 20px 0 0 0;
-	text-transform: uppercase;
-	font-weight: 600;
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
-.profile-studentno {
-	font-size: 2.5vh;
-	font-weight: 600;
-	color: #757575;
+/* Transition for Snackbar */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
 }
-
-.v-btn {
-	text-transform: capitalize;
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -1,15 +1,8 @@
 <template>
-   <v-app>
-  <div class="bg-color">
-    <slot class="overflow-hidden" />
+  <div class="app-container safe-areas-padding h-screen">
+    <div class="bg-color">
+     <NuxtPage />
+    </div>
+
   </div>
-</v-app>
 </template>
-
-<script lang="ts" setup>
-
-</script>
-
-<style>
-
-</style>
