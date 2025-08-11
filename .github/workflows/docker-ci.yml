@@ -1,0 +1,62 @@
+# Name of the workflow as it appears in the GitHub Actions UI
+name: Docker Image CI/CD
+
+# Controls when the workflow will run
+on:
+  # Trigger the workflow on pushes to the 'main' branch
+  push:
+    branches:
+      - main
+
+# Define environment variables that can be used throughout the workflow
+env:
+  REGISTRY: docker.io
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  IMAGE_NAME: sc-tapper-webapp
+  IMAGE_TAG: 1.0.${{ github.run_number }}
+  LATEST_TAG: latest
+  DOCKER_REPO: 0zyxel0/sc-tapper-webapp # This should be your Docker Hub username/image_name
+
+# A workflow run is made up of one or more jobs. Jobs run in parallel by default.
+jobs:
+  # This job will build and push the Docker image
+  build-and-push-docker:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Step 1: Check out the repository code
+      # This action checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Docker Buildx
+      # Buildx is a Docker CLI plugin that extends the docker build command with new capabilities
+      # like building with BuildKit (which provides features like parallel builds, caching, and multi-platform builds).
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Log in to Docker Hub
+      # This action logs into a Docker registry (Docker Hub in this case).
+      # The credentials (username and token) are stored as GitHub Secrets for security.
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} # Your Docker Hub username stored as a GitHub Secret
+          password: ${{ secrets.DOCKER_TOKEN }}    # Your Docker Hub Access Token (Personal Access Token) stored as a GitHub Secret
+
+      # Step 4: Build and Push Docker image
+      # This action builds and pushes a Docker image to a registry.
+      # It uses the DOCKER_REPO environment variable for the image name.
+      # It creates two tags: 'latest' and 'v<workflow_run_number>'.
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .            # The build context (current directory where the Dockerfile is located)
+          push: true            # Set to 'true' to push the image to Docker Hub
+          tags: |
+            ${{ env.DOCKER_REPO }}:${{ env.LATEST_TAG }}
+            ${{ env.DOCKER_REPO }}:${{ env.IMAGE_TAG }}
+          cache-from: type=gha   # Cache Docker layers from GitHub Actions cache
+          cache-to: type=gha,mode=max # Cache Docker layers to GitHub Actions cache for future builds
